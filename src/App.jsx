@@ -139,15 +139,10 @@ function HeadlineCard({ item }) {
   );
 }
 
-// Red dot position inside /logo-light.png (the tittle above the "i" in "Reign").
-// Measured on the 2048x760 source: center at (1402, 149).
-const LOGO_DOT_X = 1402 / 2048; // 0.6846
-const LOGO_DOT_Y = 149 / 760;   // 0.1961
-const LOGO_ASPECT = 2048 / 760; // ~2.695
-
 function IntroAnimation({ onComplete }) {
-  // 0 hidden -> 1 dot in -> 2 pulsed -> 3 logo in -> 4 line+tagline -> 5 overlay out
-  const [phase, setPhase] = useState(0);
+  const [phase, setPhase] = useState(0); // 0 hidden, 1 logo in, 2 morphing to nav
+  const [target, setTarget] = useState(null); // {x, y, h} of nav logo center
+  const BIG_HEIGHT = 96;
 
   useEffect(() => {
     const reduced = typeof window !== "undefined"
@@ -159,25 +154,32 @@ function IntroAnimation({ onComplete }) {
       const t = setTimeout(() => {
         document.body.style.overflow = prevOverflow;
         onComplete();
-      }, 300);
+      }, 250);
       return () => { clearTimeout(t); document.body.style.overflow = prevOverflow; };
     }
 
-    // Timeline (ms, absolute from mount):
-    // 120  -> dot fades in + pulse starts
-    // 1000 -> logo assembles around the dot
-    // 2200 -> red line draws, tagline fades in
-    // 3300 -> overlay fades out
-    // 4100 -> unmount
+    const measure = () => {
+      const el = document.querySelector(".nav-logo-img");
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return null;
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, h: r.height };
+    };
+
+    const LOGO_IN = 160;
+    const HOLD = 1100;
+    const MORPH = 1100;
+
     const timers = [];
-    timers.push(setTimeout(() => setPhase(1), 120));
-    timers.push(setTimeout(() => setPhase(2), 1000));
-    timers.push(setTimeout(() => setPhase(3), 2200));
-    timers.push(setTimeout(() => setPhase(4), 3300));
+    timers.push(setTimeout(() => setPhase(1), LOGO_IN));
+    timers.push(setTimeout(() => {
+      setTarget(measure());
+      setPhase(2);
+    }, LOGO_IN + HOLD));
     timers.push(setTimeout(() => {
       document.body.style.overflow = prevOverflow;
       onComplete();
-    }, 4100));
+    }, LOGO_IN + HOLD + MORPH));
 
     return () => {
       timers.forEach(clearTimeout);
@@ -185,81 +187,46 @@ function IntroAnimation({ onComplete }) {
     };
   }, []);
 
-  // Logo sizing: pick a logo height that looks good; derive logo width; then
-  // place the logo so its internal red-dot position aligns with the screen
-  // center (where our standalone dot lives).
-  const logoHeight = 72; // px
-  const logoWidth = logoHeight * LOGO_ASPECT; // ~194px
-  const logoOffsetX = (0.5 - LOGO_DOT_X) * logoWidth; // shift so dot-x maps to screen center
-  const logoOffsetY = (0.5 - LOGO_DOT_Y) * logoHeight;
-
-  const dotVisible = phase >= 1;
-  const logoVisible = phase >= 2;
-  const lineVisible = phase >= 3;
-  const exiting = phase >= 4;
+  let transform, logoOpacity, overlayOpacity;
+  if (phase === 0) {
+    transform = "translate(-50%, -50%) scale(0.94)";
+    logoOpacity = 0;
+    overlayOpacity = 1;
+  } else if (phase === 1) {
+    transform = "translate(-50%, -50%) scale(1)";
+    logoOpacity = 1;
+    overlayOpacity = 1;
+  } else {
+    overlayOpacity = 0;
+    logoOpacity = 1;
+    if (target && typeof window !== "undefined") {
+      const dx = target.x - window.innerWidth / 2;
+      const dy = target.y - window.innerHeight / 2;
+      const scale = target.h / BIG_HEIGHT;
+      transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${scale})`;
+    } else {
+      transform = "translate(-50%, -50%) scale(0.35)";
+      logoOpacity = 0;
+    }
+  }
 
   return (
-    <div aria-hidden="true" style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "#0a0a0a",
-      opacity: exiting ? 0 : 1,
-      pointerEvents: exiting ? "none" : "auto",
-      transition: "opacity 0.8s ease-in-out"
-    }}>
-      {/* Red dot — the creative throughline. Fixed at screen center. */}
-      <div style={{
-        position: "absolute", top: "50%", left: "50%",
-        width: "10px", height: "10px", borderRadius: "50%",
-        background: "#c8102e",
-        transform: "translate(-50%, -50%)",
-        opacity: dotVisible ? 1 : 0,
-        transition: "opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
-        animation: dotVisible ? "frDotPulse 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s 1" : "none",
-        willChange: "opacity, transform"
+    <>
+      <div aria-hidden="true" style={{
+        position: "fixed", inset: 0, zIndex: 9998, background: "#0a0a0a",
+        opacity: overlayOpacity,
+        pointerEvents: overlayOpacity === 0 ? "none" : "auto",
+        transition: "opacity 0.9s ease"
       }} />
-
-      {/* Logo — positioned so its internal dot lands on screen center. */}
-      <img src="/logo-light.png" alt="" style={{
-        position: "absolute", top: "50%", left: "50%",
-        height: `${logoHeight}px`, width: "auto",
-        transform: `translate(calc(-50% + ${logoOffsetX}px), calc(-50% + ${logoOffsetY - (logoVisible ? 0 : 10)}px))`,
-        opacity: logoVisible ? 1 : 0,
-        transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
-        willChange: "opacity, transform",
+      <img aria-hidden="true" src="/logo-light.png" alt="" style={{
+        position: "fixed", top: "50%", left: "50%", zIndex: 9999,
+        height: `${BIG_HEIGHT}px`, width: "auto",
+        opacity: logoOpacity, transform,
+        transition: "transform 1.0s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.55s ease",
+        willChange: "transform, opacity",
         pointerEvents: "none"
       }} />
-
-      {/* Red accent line + tagline, below the logo */}
-      <div style={{
-        position: "absolute", top: "50%", left: "50%",
-        transform: `translate(-50%, calc(-50% + ${logoHeight * 0.9}px))`,
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "14px"
-      }}>
-        <div style={{
-          width: "60px", height: "1px", background: "#c8102e",
-          transform: lineVisible ? "scaleX(1)" : "scaleX(0)",
-          transformOrigin: "center",
-          transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
-          willChange: "transform"
-        }} />
-        <div style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          fontSize: "0.7rem", letterSpacing: "0.25em", textTransform: "uppercase",
-          color: "rgba(255,255,255,0.85)", fontWeight: 500,
-          opacity: lineVisible ? 1 : 0,
-          transform: lineVisible ? "translateY(0)" : "translateY(10px)",
-          transition: "opacity 0.4s ease-out 0.15s, transform 0.4s ease-out 0.15s",
-          willChange: "opacity, transform"
-        }}>We Engineer Credibility.</div>
-      </div>
-
-      <style>{`
-        @keyframes frDotPulse {
-          0%   { transform: translate(-50%, -50%) scale(1); }
-          45%  { transform: translate(-50%, -50%) scale(1.3); }
-          100% { transform: translate(-50%, -50%) scale(1); }
-        }
-      `}</style>
-    </div>
+    </>
   );
 }
 
