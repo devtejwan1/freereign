@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 
 const MEDIA_LOGOS = [
-  { name: "CTV News", img: "/logos/ctv-news.svg" },
-  { name: "CBC News", img: "/logos/cbc-news.png" },
-  { name: "Forbes", img: "/logos/forbes.png" },
-  { name: "The Logic", img: "/logos/the-logic.png" },
-  { name: "Bloomberg", img: "/logos/bloomberg.png" },
-  { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
-  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
-  { name: "Financial Post", img: "/logos/financial-post.png" },
-  { name: "BetaKit", img: "/logos/betakit.png" },
-  { name: "Cointelegraph", img: "/logos/cointelegraph.png" },
-  { name: "American Banker", img: "/logos/american-banker.png" },
-  { name: "The Defiant", img: "/logos/the-defiant.png" },
+  { name: "CTV News", img: "/logos/ctv-news.svg", h: 34 },
+  { name: "CBC News", img: "/logos/cbc-news.png", h: 26 },
+  { name: "Forbes", img: "/logos/forbes.png", h: 32 },
+  { name: "The Logic", img: "/logos/the-logic.png", h: 40 },
+  { name: "Bloomberg", img: "/logos/bloomberg.png", h: 28 },
+  { name: "The Globe and Mail", img: "/logos/globe-and-mail.png", h: 22 },
+  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png", h: 48 },
+  { name: "Financial Post", img: "/logos/financial-post.png", h: 26 },
+  { name: "BetaKit", img: "/logos/betakit.png", h: 32 },
+  { name: "Cointelegraph", img: "/logos/cointelegraph.png", h: 52 },
+  { name: "American Banker", img: "/logos/american-banker.png", h: 24 },
+  { name: "The Defiant", img: "/logos/the-defiant.png", h: 40 },
 ];
 
 const TETRA_HEADLINES = [
@@ -100,17 +100,17 @@ function PressLogo({ name }) {
 function Marquee() {
   const items = [...MEDIA_LOGOS, ...MEDIA_LOGOS, ...MEDIA_LOGOS];
   return (
-    <div style={{ overflow: "hidden", padding: "40px 0", background: "#fafafa", borderTop: "1px solid #eee", borderBottom: "1px solid #eee" }}>
-      <p style={{ textAlign: "center", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#999", marginBottom: "24px", fontWeight: 600 }}>Positioned for Real Coverage</p>
-      <div style={{ display: "flex", alignItems: "center", animation: "marquee 35s linear infinite", width: "fit-content" }}>
+    <div style={{ overflow: "hidden", padding: "48px 0", background: "#fafafa", borderTop: "1px solid #eee", borderBottom: "1px solid #eee" }}>
+      <p style={{ textAlign: "center", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#999", marginBottom: "32px", fontWeight: 600 }}>Positioned for Real Coverage</p>
+      <div style={{ display: "flex", alignItems: "center", animation: "marquee 50s linear infinite", width: "fit-content" }}>
         {items.map((logo, i) => (
           <div key={i} style={{
-            flex: "0 0 auto", padding: "0 28px",
+            flex: "0 0 auto", padding: "0 44px",
             display: "flex", alignItems: "center", justifyContent: "center",
-            height: "56px", width: "200px"
+            height: "60px"
           }}>
             <img src={logo.img} alt={logo.name} style={{
-              maxHeight: "44px", maxWidth: "200px", width: "auto", height: "auto",
+              height: `${logo.h}px`, width: "auto",
               objectFit: "contain", display: "block"
             }} />
           </div>
@@ -140,14 +140,22 @@ function HeadlineCard({ item }) {
 }
 
 function IntroAnimation({ onComplete }) {
-  const [dotIn, setDotIn] = useState(false);
-  const [exiting, setExiting] = useState(false);
+  const [phase, setPhase] = useState(0); // 0 hidden, 1 big center, 2 moving to nav
+  const [target, setTarget] = useState(null); // {x,y,h} for nav logo center
 
   useEffect(() => {
     const reduced = typeof window !== "undefined"
       && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    const measure = () => {
+      const el = document.querySelector(".nav-logo-img");
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, h: r.height };
+    };
+    setTarget(measure());
 
     if (reduced) {
       const t = setTimeout(() => {
@@ -157,17 +165,17 @@ function IntroAnimation({ onComplete }) {
       return () => { clearTimeout(t); document.body.style.overflow = prevOverflow; };
     }
 
-    const DOT_IN = 120;
-    const HOLD = 1100;
-    const EXIT_DURATION = 800;
+    const LOGO_IN = 150;
+    const HOLD = 1150;
+    const MORPH = 1100;
 
     const timers = [];
-    timers.push(setTimeout(() => setDotIn(true), DOT_IN));
-    timers.push(setTimeout(() => setExiting(true), DOT_IN + HOLD));
+    timers.push(setTimeout(() => setPhase(1), LOGO_IN));
+    timers.push(setTimeout(() => setPhase(2), LOGO_IN + HOLD));
     timers.push(setTimeout(() => {
       document.body.style.overflow = prevOverflow;
       onComplete();
-    }, DOT_IN + HOLD + EXIT_DURATION));
+    }, LOGO_IN + HOLD + MORPH));
 
     return () => {
       timers.forEach(clearTimeout);
@@ -175,27 +183,54 @@ function IntroAnimation({ onComplete }) {
     };
   }, []);
 
+  const bigHeight = 96;
+  const vw = typeof window !== "undefined" ? window.innerWidth : 0;
+  const vh = typeof window !== "undefined" ? window.innerHeight : 0;
+
+  let transform, height, imgOpacity;
+  if (phase === 0) {
+    transform = "translate(-50%, -50%) scale(0.92)";
+    height = bigHeight;
+    imgOpacity = 0;
+  } else if (phase === 1) {
+    transform = "translate(-50%, -50%) scale(1)";
+    height = bigHeight;
+    imgOpacity = 1;
+  } else {
+    if (target) {
+      const dx = target.x - vw / 2;
+      const dy = target.y - vh / 2;
+      transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+      height = target.h;
+    } else {
+      transform = "translate(-50%, -50%) scale(0.34)";
+      height = bigHeight;
+    }
+    imgOpacity = 1;
+  }
+
   return (
-    <div aria-hidden="true" style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "#0a0a0a",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      transform: exiting ? "translateY(-100%)" : "translateY(0)",
-      transition: "transform 0.8s cubic-bezier(0.76, 0, 0.24, 1)",
-      willChange: "transform"
-    }}>
-      <div style={{
-        width: "18px", height: "18px", borderRadius: "50%", background: "#c8102e",
-        opacity: dotIn ? 1 : 0,
-        transform: dotIn ? "scale(1)" : "scale(0)",
-        transition: "opacity 0.45s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1)",
-        boxShadow: dotIn ? "0 0 36px rgba(200,16,46,0.35)" : "none",
-        willChange: "opacity, transform"
+    <>
+      <div aria-hidden="true" style={{
+        position: "fixed", inset: 0, zIndex: 9998, background: "#0a0a0a",
+        opacity: phase >= 2 ? 0 : 1,
+        pointerEvents: phase >= 2 ? "none" : "auto",
+        transition: "opacity 0.9s ease"
       }} />
-    </div>
+      <img aria-hidden="true" src="/logo-light.png" alt="" style={{
+        position: "fixed", top: "50%", left: "50%", zIndex: 9999,
+        height: `${height}px`, width: "auto",
+        opacity: imgOpacity, transform,
+        transformOrigin: "center",
+        transition: "transform 1.05s cubic-bezier(0.76, 0, 0.24, 1), height 1.05s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.6s ease",
+        willChange: "transform, height, opacity",
+        pointerEvents: "none"
+      }} />
+    </>
   );
 }
 
-function Nav({ currentPage, onNavigate }) {
+function Nav({ currentPage, onNavigate, logoVisible = true }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
@@ -230,7 +265,7 @@ function Nav({ currentPage, onNavigate }) {
       }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
           <div onClick={() => { setMobileOpen(false); onNavigate("home"); }} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
-            <img src="/logo-light.png" alt="Free Reign Media" className="nav-logo-img" style={{ height: "32px", objectFit: "contain" }} />
+            <img src="/logo-light.png" alt="Free Reign Media" className="nav-logo-img" style={{ height: "32px", objectFit: "contain", opacity: logoVisible ? 1 : 0, transition: "opacity 0.25s ease" }} />
           </div>
           {/* Desktop links */}
           <div className="nav-desktop-links" style={{ display: "flex", gap: "32px", alignItems: "center" }}>
@@ -357,15 +392,18 @@ function About() {
       background: "linear-gradient(170deg, #0a0a0a 0%, #141414 40%, #1a1a1a 100%)",
       padding: "100px clamp(20px, 5vw, 60px)", color: "#fff"
     }}>
-      <div style={{ maxWidth: "760px", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "40px" }}>
-        <div>
-          <div style={{ width: "220px", height: "280px", borderRadius: "8px", margin: "0 auto", overflow: "hidden" }}>
-            <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+      <div className="about-grid" style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", gap: "60px", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ flex: "0 0 280px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+          <div style={{
+            width: "220px", height: "280px", borderRadius: "8px",
+            overflow: "hidden"
+          }}>
+            <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center" }} />
           </div>
           <p style={{ marginTop: "16px", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
         </div>
-        <div>
+        <div style={{ flex: 1, minWidth: "300px" }}>
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
           <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
             Real Editorial Experience.<br />Real Results.
@@ -832,6 +870,8 @@ export default function App() {
         ::selection { background: #c8102e; color: #fff; }
         input:focus, textarea:focus { border-color: #c8102e !important; }
         @media (max-width: 768px) {
+          .about-grid { flex-direction: column !important; gap: 32px !important; text-align: center; }
+          .about-grid > div:first-child { flex: none !important; }
           .work-grid { grid-template-columns: 1fr !important; }
           .contact-2col { grid-template-columns: 1fr !important; }
           .footer-inner { flex-direction: column !important; text-align: center !important; gap: 12px !important; }
@@ -847,7 +887,7 @@ export default function App() {
 
       {!introComplete && <IntroAnimation onComplete={finishIntro} />}
 
-      <Nav currentPage={page} onNavigate={navigate} />
+      <Nav currentPage={page} onNavigate={navigate} logoVisible={introComplete} />
 
       {page === "home" && (
         <>
