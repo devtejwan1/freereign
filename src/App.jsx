@@ -142,6 +142,18 @@ function HeadlineCard({ item }) {
 function IntroAnimation({ onComplete }) {
   const [phase, setPhase] = useState(0); // 0 hidden, 1 big center, 2 moving to nav
   const [target, setTarget] = useState(null); // {x,y,h} for nav logo center
+  const [viewport, setViewport] = useState(() => ({
+    w: typeof window !== "undefined" ? window.innerWidth : 0,
+    h: typeof window !== "undefined" ? window.innerHeight : 0,
+  }));
+
+  const measure = () => {
+    const el = document.querySelector(".nav-logo-img");
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return null;
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2, h: r.height };
+  };
 
   useEffect(() => {
     const reduced = typeof window !== "undefined"
@@ -149,20 +161,26 @@ function IntroAnimation({ onComplete }) {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const measure = () => {
-      const el = document.querySelector(".nav-logo-img");
-      if (!el) return null;
-      const r = el.getBoundingClientRect();
-      return { x: r.left + r.width / 2, y: r.top + r.height / 2, h: r.height };
+    // Measure after layout settles on next frame
+    const raf = requestAnimationFrame(() => setTarget(measure()));
+
+    const onResize = () => {
+      setViewport({ w: window.innerWidth, h: window.innerHeight });
+      setTarget(measure());
     };
-    setTarget(measure());
+    window.addEventListener("resize", onResize);
 
     if (reduced) {
       const t = setTimeout(() => {
         document.body.style.overflow = prevOverflow;
         onComplete();
       }, 250);
-      return () => { clearTimeout(t); document.body.style.overflow = prevOverflow; };
+      return () => {
+        clearTimeout(t);
+        cancelAnimationFrame(raf);
+        window.removeEventListener("resize", onResize);
+        document.body.style.overflow = prevOverflow;
+      };
     }
 
     const LOGO_IN = 150;
@@ -171,7 +189,12 @@ function IntroAnimation({ onComplete }) {
 
     const timers = [];
     timers.push(setTimeout(() => setPhase(1), LOGO_IN));
-    timers.push(setTimeout(() => setPhase(2), LOGO_IN + HOLD));
+    timers.push(setTimeout(() => {
+      // Re-measure right before the morph so we hit the exact current nav slot
+      const fresh = measure();
+      if (fresh) setTarget(fresh);
+      setPhase(2);
+    }, LOGO_IN + HOLD));
     timers.push(setTimeout(() => {
       document.body.style.overflow = prevOverflow;
       onComplete();
@@ -179,13 +202,13 @@ function IntroAnimation({ onComplete }) {
 
     return () => {
       timers.forEach(clearTimeout);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
       document.body.style.overflow = prevOverflow;
     };
   }, []);
 
   const bigHeight = 96;
-  const vw = typeof window !== "undefined" ? window.innerWidth : 0;
-  const vh = typeof window !== "undefined" ? window.innerHeight : 0;
 
   let transform, height, imgOpacity;
   if (phase === 0) {
@@ -198,15 +221,18 @@ function IntroAnimation({ onComplete }) {
     imgOpacity = 1;
   } else {
     if (target) {
-      const dx = target.x - vw / 2;
-      const dy = target.y - vh / 2;
+      const dx = target.x - viewport.w / 2;
+      const dy = target.y - viewport.h / 2;
       transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
       height = target.h;
+      imgOpacity = 1;
     } else {
-      transform = "translate(-50%, -50%) scale(0.34)";
+      // No measurement available — just fade out with the overlay instead of
+      // morphing to an unrelated position
+      transform = "translate(-50%, -50%) scale(1)";
       height = bigHeight;
+      imgOpacity = 0;
     }
-    imgOpacity = 1;
   }
 
   return (
@@ -398,7 +424,7 @@ function About() {
             width: "220px", height: "280px", borderRadius: "8px",
             overflow: "hidden"
           }}>
-            <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "42% center" }} />
+            <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "58% center" }} />
           </div>
           <p style={{ marginTop: "16px", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
