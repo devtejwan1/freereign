@@ -132,38 +132,82 @@ function HeadlineCard({ item }) {
   );
 }
 
+const INTRO_WORDS = ["Strategic.", "Precise.", "Earned.", "Credible.", "Trusted."];
+
 function IntroAnimation({ onComplete }) {
-  const [phase, setPhase] = useState(0);
+  const [logoIn, setLogoIn] = useState(false);
+  const [wordsShown, setWordsShown] = useState(0);
+  const [exiting, setExiting] = useState(false);
+
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 100);
-    const t2 = setTimeout(() => setPhase(2), 2400);
-    const t3 = setTimeout(() => onComplete(), 3200);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    const reduced = typeof window !== "undefined"
+      && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    if (reduced) {
+      const t = setTimeout(() => {
+        document.body.style.overflow = prevOverflow;
+        onComplete();
+      }, 300);
+      return () => { clearTimeout(t); document.body.style.overflow = prevOverflow; };
+    }
+
+    const timers = [];
+    const LOGO_DELAY = 150;
+    const WORDS_START = 1100;
+    const WORD_STAGGER = 260;
+    const EXIT_HOLD = 500;
+    const EXIT_DURATION = 800;
+
+    timers.push(setTimeout(() => setLogoIn(true), LOGO_DELAY));
+    INTRO_WORDS.forEach((_, i) => {
+      timers.push(setTimeout(() => setWordsShown(n => Math.max(n, i + 1)),
+        WORDS_START + i * WORD_STAGGER));
+    });
+    const wordsDoneAt = WORDS_START + INTRO_WORDS.length * WORD_STAGGER;
+    timers.push(setTimeout(() => setExiting(true), wordsDoneAt + EXIT_HOLD));
+    timers.push(setTimeout(() => {
+      document.body.style.overflow = prevOverflow;
+      onComplete();
+    }, wordsDoneAt + EXIT_HOLD + EXIT_DURATION));
+
+    return () => {
+      timers.forEach(clearTimeout);
+      document.body.style.overflow = prevOverflow;
+    };
   }, []);
+
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "#0a0a0a", display: "flex",
-      alignItems: "center", justifyContent: "center", flexDirection: "column",
-      opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.8s ease", pointerEvents: phase >= 2 ? "none" : "all"
+    <div aria-hidden="true" style={{
+      position: "fixed", inset: 0, zIndex: 9999, background: "#0a0a0a",
+      display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
+      transform: exiting ? "translateY(-100%)" : "translateY(0)",
+      transition: "transform 0.8s cubic-bezier(0.76, 0, 0.24, 1)",
+      willChange: "transform"
     }}>
+      <img src="/logo-light.png" alt="" style={{
+        height: "clamp(44px, 9vw, 80px)", objectFit: "contain", marginBottom: "48px",
+        opacity: logoIn ? 1 : 0,
+        transform: logoIn ? "scale(1)" : "scale(0.9)",
+        transition: "opacity 0.9s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1)",
+        willChange: "opacity, transform"
+      }} />
       <div style={{
-        opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0)" : "translateY(20px)",
-        transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)", textAlign: "center"
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
+        fontFamily: "'Playfair Display', Georgia, serif",
+        fontSize: "clamp(1.6rem, 4.4vw, 3rem)",
+        fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15,
+        textAlign: "center"
       }}>
-        <div style={{
-          fontSize: "clamp(2rem, 6vw, 4.5rem)", fontFamily: "'Playfair Display', Georgia, serif",
-          color: "#fff", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, display: "flex", justifyContent: "center"
-        }}><img src="/logo-light.png" alt="Free Reign Media" style={{ height: "clamp(50px, 10vw, 90px)", objectFit: "contain" }} /></div>
-        <div style={{
-          width: "60px", height: "1px", background: "#c8102e", margin: "20px auto 0",
-          opacity: phase >= 1 ? 1 : 0, transition: "opacity 1.2s ease 0.4s",
-          transform: phase >= 1 ? "scaleX(1)" : "scaleX(0)", transformOrigin: "center"
-        }} />
-        <div style={{
-          fontSize: "clamp(0.55rem, 1.2vw, 0.7rem)", textTransform: "uppercase", letterSpacing: "0.25em",
-          color: "rgba(255,255,255,0.4)", marginTop: "16px", fontWeight: 500,
-          opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease 0.8s"
-        }}>We Engineer Credibility.</div>
+        {INTRO_WORDS.map((w, i) => (
+          <span key={w} style={{
+            opacity: wordsShown > i ? 1 : 0,
+            transform: wordsShown > i ? "translateY(0)" : "translateY(22px)",
+            transition: "opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
+            willChange: "opacity, transform"
+          }}>{w}</span>
+        ))}
       </div>
     </div>
   );
@@ -769,9 +813,18 @@ const SYMBIOTIC_DATA = {
 };
 
 export default function App() {
-  const [introComplete, setIntroComplete] = useState(false);
+  const [introComplete, setIntroComplete] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try { return sessionStorage.getItem("fr_intro_played") === "1"; }
+    catch { return false; }
+  });
   const [page, setPage] = useState("home");
   const [scrollTarget, setScrollTarget] = useState(null);
+
+  const finishIntro = () => {
+    try { sessionStorage.setItem("fr_intro_played", "1"); } catch {}
+    setIntroComplete(true);
+  };
 
   const navigate = (p, target) => {
     if (p === "contact") { setPage("contact"); return; }
@@ -817,7 +870,7 @@ export default function App() {
         }
       `}</style>
 
-      {!introComplete && <IntroAnimation onComplete={() => setIntroComplete(true)} />}
+      {!introComplete && <IntroAnimation onComplete={finishIntro} />}
 
       <Nav currentPage={page} onNavigate={navigate} />
 
