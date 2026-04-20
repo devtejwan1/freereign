@@ -132,11 +132,8 @@ function HeadlineCard({ item }) {
   );
 }
 
-const INTRO_WORDS = ["Strategic.", "Precise.", "Earned.", "Credible.", "Trusted."];
-
 function IntroAnimation({ onComplete }) {
-  const [logoIn, setLogoIn] = useState(false);
-  const [wordsShown, setWordsShown] = useState(0);
+  const [dotIn, setDotIn] = useState(false);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
@@ -149,28 +146,21 @@ function IntroAnimation({ onComplete }) {
       const t = setTimeout(() => {
         document.body.style.overflow = prevOverflow;
         onComplete();
-      }, 300);
+      }, 250);
       return () => { clearTimeout(t); document.body.style.overflow = prevOverflow; };
     }
 
-    const timers = [];
-    const LOGO_DELAY = 150;
-    const WORDS_START = 1100;
-    const WORD_STAGGER = 260;
-    const EXIT_HOLD = 500;
+    const DOT_IN = 120;
+    const HOLD = 1100;
     const EXIT_DURATION = 800;
 
-    timers.push(setTimeout(() => setLogoIn(true), LOGO_DELAY));
-    INTRO_WORDS.forEach((_, i) => {
-      timers.push(setTimeout(() => setWordsShown(n => Math.max(n, i + 1)),
-        WORDS_START + i * WORD_STAGGER));
-    });
-    const wordsDoneAt = WORDS_START + INTRO_WORDS.length * WORD_STAGGER;
-    timers.push(setTimeout(() => setExiting(true), wordsDoneAt + EXIT_HOLD));
+    const timers = [];
+    timers.push(setTimeout(() => setDotIn(true), DOT_IN));
+    timers.push(setTimeout(() => setExiting(true), DOT_IN + HOLD));
     timers.push(setTimeout(() => {
       document.body.style.overflow = prevOverflow;
       onComplete();
-    }, wordsDoneAt + EXIT_HOLD + EXIT_DURATION));
+    }, DOT_IN + HOLD + EXIT_DURATION));
 
     return () => {
       timers.forEach(clearTimeout);
@@ -181,34 +171,19 @@ function IntroAnimation({ onComplete }) {
   return (
     <div aria-hidden="true" style={{
       position: "fixed", inset: 0, zIndex: 9999, background: "#0a0a0a",
-      display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
+      display: "flex", alignItems: "center", justifyContent: "center",
       transform: exiting ? "translateY(-100%)" : "translateY(0)",
       transition: "transform 0.8s cubic-bezier(0.76, 0, 0.24, 1)",
       willChange: "transform"
     }}>
-      <img src="/logo-light.png" alt="" style={{
-        height: "clamp(44px, 9vw, 80px)", objectFit: "contain", marginBottom: "48px",
-        opacity: logoIn ? 1 : 0,
-        transform: logoIn ? "scale(1)" : "scale(0.9)",
-        transition: "opacity 0.9s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1)",
+      <div style={{
+        width: "18px", height: "18px", borderRadius: "50%", background: "#c8102e",
+        opacity: dotIn ? 1 : 0,
+        transform: dotIn ? "scale(1)" : "scale(0)",
+        transition: "opacity 0.45s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1)",
+        boxShadow: dotIn ? "0 0 36px rgba(200,16,46,0.35)" : "none",
         willChange: "opacity, transform"
       }} />
-      <div style={{
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
-        fontFamily: "'Playfair Display', Georgia, serif",
-        fontSize: "clamp(1.6rem, 4.4vw, 3rem)",
-        fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15,
-        textAlign: "center"
-      }}>
-        {INTRO_WORDS.map((w, i) => (
-          <span key={w} style={{
-            opacity: wordsShown > i ? 1 : 0,
-            transform: wordsShown > i ? "translateY(0)" : "translateY(22px)",
-            transition: "opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
-            willChange: "opacity, transform"
-          }}>{w}</span>
-        ))}
-      </div>
     </div>
   );
 }
@@ -349,7 +324,6 @@ function Hero({ onNavigate }) {
         transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#c8102e", marginBottom: "20px", fontWeight: 600 }}>Strategic Communications</p>
-        <img src="/logo-light.png" alt="Free Reign Media" style={{ height: "50px", objectFit: "contain", marginBottom: "20px" }} />
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2.4rem, 7vw, 5rem)",
           color: "#fff", fontWeight: 700, lineHeight: 1.05, margin: "0 0 24px", letterSpacing: "-0.02em"
