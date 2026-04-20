@@ -453,7 +453,7 @@ function WorkPreview({ onNavigate }) {
         <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#0a0a0a", margin: "0 0 50px" }}>Case Studies</h2>
         <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
           {[
-            { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoText: "TETRA", logoBg: "#0a2540" },
+            { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png", logoOnLight: true },
             { name: "Symbiotic", desc: "Elevated a technical startup to an essential partner for global capital. 3 national TV appearances.", page: "symbiotic", logoImg: "/symbiotic-logo.jpg" },
           ].map((c, i) => (
             <div key={i} onClick={() => onNavigate(c.page)} style={{
@@ -464,7 +464,11 @@ function WorkPreview({ onNavigate }) {
               onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
             >
               <div style={{ marginBottom: "16px" }}>
-                {c.logoImg ? (
+                {c.logoImg && c.logoOnLight ? (
+                  <div style={{ display: "inline-flex", background: "#fff", padding: "8px 12px", borderRadius: "8px" }}>
+                    <img src={c.logoImg} alt={c.name} style={{ height: "28px", width: "auto", objectFit: "contain", display: "block" }} />
+                  </div>
+                ) : c.logoImg ? (
                   <img src={c.logoImg} alt={c.name} style={{ height: "36px", width: "36px", borderRadius: "6px", objectFit: "cover" }} />
                 ) : (
                   <div style={{ display: "inline-flex", background: c.logoBg, padding: "8px 14px", borderRadius: "6px" }}>
@@ -805,7 +809,7 @@ function Footer({ onNavigate }) {
 
 const TETRA_DATA = {
   title: "Tetra Digital Group",
-  clientLogo: (<div style={{ display: "inline-flex", background: "#0a2540", padding: "10px 18px", borderRadius: "8px" }}><span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#fff", letterSpacing: "0.12em", fontFamily: "system-ui, sans-serif" }}>TETRA</span></div>),
+  clientLogo: (<div style={{ display: "inline-flex", background: "#fff", padding: "10px 16px", borderRadius: "8px" }}><img src="/logos/tetra-digital-group.png" alt="Tetra Digital Group" style={{ height: "40px", width: "auto", objectFit: "contain", display: "block" }} /></div>),
   assignment1: "Canada's digital asset sector has long operated without a unified regulatory framework, creating fragmentation and uncertainty. Against this backdrop, Tetra Digital Group faced a dual challenge: navigating an evolving regulatory environment while building the credibility required to engage sophisticated financial players.",
   assignment2: "Our goal was to shift the conversation from speculation to infrastructure. By positioning Tetra as a trusted, regulated partner for institutional investors, we helped anchor the brand's reputation, demonstrating stability and reliability, while establishing a benchmark for institutional engagement in Canada's digital asset ecosystem.",
   stats: [
