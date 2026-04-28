@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 
 const MEDIA_LOGOS = [
-  { name: "CTV News", img: "/logos/ctv-news.svg" },
-  { name: "CBC News", img: "/logos/cbc-news.png" },
-  { name: "Forbes", img: "/logos/forbes.png" },
+  { name: "CTV News", img: "/logos/ctv-news-updated.png" },
+  { name: "CBC News", img: "/logos/cbc-news-updated.png" },
+  { name: "Forbes", img: "/logos/forbes-updated.png" },
   { name: "The Logic", img: "/logos/the-logic.png" },
-  { name: "Bloomberg", img: "/logos/bloomberg.png" },
+  { name: "Bloomberg", img: "/logos/bloomberg-updated.png" },
   { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
   { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
   { name: "Financial Post", img: "/logos/financial-post.png" },
-  { name: "BetaKit", img: "/logos/betakit.png" },
+  { name: "BetaKit", img: "/logos/betakit-updated.png" },
+  { name: "CoinDesk", img: "/logos/coindesk-updated.png" },
   { name: "Cointelegraph", img: "/logos/cointelegraph.png" },
   { name: "American Banker", img: "/logos/american-banker.png" },
   { name: "The Defiant", img: "/logos/the-defiant.png" },
@@ -76,15 +77,16 @@ const SERVICES = [
 ];
 
 const LOGO_IMG_MAP = {
-  "CTV News": "/logos/ctv-news.svg",
-  "CBC News": "/logos/cbc-news.png",
-  "Forbes": "/logos/forbes.png",
+  "CTV News": "/logos/ctv-news-updated.png",
+  "CBC News": "/logos/cbc-news-updated.png",
+  "Forbes": "/logos/forbes-updated.png",
   "The Logic": "/logos/the-logic.png",
-  "Bloomberg": "/logos/bloomberg.png",
+  "Bloomberg": "/logos/bloomberg-updated.png",
   "The Globe and Mail": "/logos/globe-and-mail.png",
   "BNN Bloomberg": "/logos/bnn-bloomberg.png",
   "Financial Post": "/logos/financial-post.png",
-  "BetaKit": "/logos/betakit.png",
+  "BetaKit": "/logos/betakit-updated.png",
+  "CoinDesk": "/logos/coindesk-updated.png",
   "Cointelegraph": "/logos/cointelegraph.png",
   "American Banker": "/logos/american-banker.png",
   "The Defiant": "/logos/the-defiant.png",
@@ -393,7 +395,7 @@ function WorkPreview({ onNavigate }) {
         <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#0a0a0a", margin: "0 0 50px" }}>Case Studies</h2>
         <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
           {[
-            { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoText: "TETRA", logoBg: "#0a2540" },
+            { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png", logoStyle: { width: "72px", height: "72px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "8px" } },
             { name: "Symbiotic", desc: "Elevated a technical startup to an essential partner for global capital. 3 national TV appearances.", page: "symbiotic", logoImg: "/symbiotic-logo.jpg" },
           ].map((c, i) => (
             <div key={i} onClick={() => onNavigate(c.page)} style={{
@@ -405,7 +407,7 @@ function WorkPreview({ onNavigate }) {
             >
               <div style={{ marginBottom: "16px" }}>
                 {c.logoImg ? (
-                  <img src={c.logoImg} alt={c.name} style={{ height: "36px", width: "36px", borderRadius: "6px", objectFit: "cover" }} />
+                  <img src={c.logoImg} alt={c.name} style={c.logoStyle || { height: "36px", width: "36px", borderRadius: "6px", objectFit: "cover" }} />
                 ) : (
                   <div style={{ display: "inline-flex", background: c.logoBg, padding: "8px 14px", borderRadius: "6px" }}>
                     <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#fff", letterSpacing: "0.1em" }}>{c.logoText}</span>
@@ -745,7 +747,7 @@ function Footer({ onNavigate }) {
 
 const TETRA_DATA = {
   title: "Tetra Digital Group",
-  clientLogo: (<div style={{ display: "inline-flex", background: "#0a2540", padding: "10px 18px", borderRadius: "8px" }}><span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#fff", letterSpacing: "0.12em", fontFamily: "system-ui, sans-serif" }}>TETRA</span></div>),
+  clientLogo: (<img src="/logos/tetra-digital-group.png" alt="Tetra Digital Group" style={{ height: "64px", width: "64px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "8px" }} />),
   assignment1: "Canada's digital asset sector has long operated without a unified regulatory framework, creating fragmentation and uncertainty. Against this backdrop, Tetra Digital Group faced a dual challenge: navigating an evolving regulatory environment while building the credibility required to engage sophisticated financial players.",
   assignment2: "Our goal was to shift the conversation from speculation to infrastructure. By positioning Tetra as a trusted, regulated partner for institutional investors, we helped anchor the brand's reputation, demonstrating stability and reliability, while establishing a benchmark for institutional engagement in Canada's digital asset ecosystem.",
   stats: [
