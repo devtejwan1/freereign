@@ -94,17 +94,17 @@ const LOGO_IMG_MAP = {
 };
 
 const LOGO_FIT = {
-  "CTV News": { height: 28, width: 118 },
+  "CTV News": { height: 34, width: 150 },
   "CBC News": { height: 24, width: 150 },
   "Forbes": { height: 24, width: 108 },
   "The Logic": { height: 24, width: 118 },
   "Bloomberg": { height: 22, width: 150 },
   "The Globe and Mail": { height: 22, width: 160 },
-  "BNN Bloomberg": { height: 22, width: 150 },
+  "BNN Bloomberg": { height: 28, width: 170 },
   "Financial Post": { height: 23, width: 142 },
   "BetaKit": { height: 25, width: 124 },
   "CoinDesk": { height: 30, width: 154 },
-  "Cointelegraph": { height: 34, width: 152 },
+  "Cointelegraph": { height: 42, width: 168 },
   "American Banker": { height: 22, width: 150 },
   "The Defiant": { height: 25, width: 130 },
   "Thinking Crypto": { height: 25, width: 142 },
