@@ -420,6 +420,10 @@ function Services() {
 }
 
 function WorkPreview({ onNavigate }) {
+  const clientLogoFrame = {
+    width: "72px", height: "72px", borderRadius: "10px", background: "#fff",
+    padding: "10px", objectFit: "contain", display: "block"
+  };
   return (
     <section id="work" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fafafa" }}>
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
@@ -427,7 +431,7 @@ function WorkPreview({ onNavigate }) {
         <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#0a0a0a", margin: "0 0 50px" }}>Case Studies</h2>
         <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
           {[
-            { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png", logoStyle: { width: "72px", height: "72px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "8px" } },
+            { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png" },
             { name: "Symbiotic", desc: "Elevated a technical startup to an essential partner for global capital. 3 national TV appearances.", page: "symbiotic", logoImg: "/symbiotic-logo.jpg" },
           ].map((c, i) => (
             <div key={i} onClick={() => onNavigate(c.page)} style={{
@@ -439,7 +443,7 @@ function WorkPreview({ onNavigate }) {
             >
               <div style={{ marginBottom: "16px" }}>
                 {c.logoImg ? (
-                  <img src={c.logoImg} alt={c.name} style={c.logoStyle || { height: "36px", width: "36px", borderRadius: "6px", objectFit: "cover" }} />
+                  <img src={c.logoImg} alt={c.name} style={clientLogoFrame} />
                 ) : (
                   <div style={{ display: "inline-flex", background: c.logoBg, padding: "8px 14px", borderRadius: "6px" }}>
                     <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#fff", letterSpacing: "0.1em" }}>{c.logoText}</span>
@@ -780,7 +784,7 @@ function Footer({ onNavigate }) {
 
 const TETRA_DATA = {
   title: "Tetra Digital Group",
-  clientLogo: (<img src="/logos/tetra-digital-group.png" alt="Tetra Digital Group" style={{ height: "64px", width: "64px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "8px" }} />),
+  clientLogo: (<img src="/logos/tetra-digital-group.png" alt="Tetra Digital Group" style={{ height: "76px", width: "76px", borderRadius: "10px", objectFit: "contain", background: "#fff", padding: "10px" }} />),
   assignmentParagraphs: [
     "Digital assets have long been viewed as speculative, which limited institutional participation. As regulatory clarity began to develop globally, Tetra Digital Group prepared to announce the launch of CADD, a Canadian-dollar stablecoin and the first to be issued by a regulated financial institution in Canada.",
     "The announcement marked a significant milestone. It needed to clearly communicate the regulatory framework behind CADD while making the story relevant to both traditional finance and digital asset audiences.",
@@ -796,7 +800,7 @@ const TETRA_DATA = {
 
 const SYMBIOTIC_DATA = {
   title: "Symbiotic",
-  clientLogo: (<img src="/symbiotic-logo.jpg" alt="Symbiotic" style={{ height: "48px", width: "48px", borderRadius: "8px", objectFit: "cover" }} />),
+  clientLogo: (<img src="/symbiotic-logo.jpg" alt="Symbiotic" style={{ height: "76px", width: "76px", borderRadius: "10px", objectFit: "contain", background: "#fff", padding: "10px" }} />),
   assignment1: "The digital asset sector is currently defined by fragmented markets and trapped liquidity. Symbiotic entered the market to unlock this capital, providing the infrastructure to mobilize underutilized assets as institutional-grade security for the broader financial ecosystem.",
   assignment2: "We were tasked with elevating Symbiotic from a technical startup to an essential partner for global capital. Using real editorial execution, we pivoted the narrative from technical design to institutional opportunity—positioning leadership as the definitive voices for how traditional institutions safely navigate decentralized technology.",
   stats: [
