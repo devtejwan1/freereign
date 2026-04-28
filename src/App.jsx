@@ -366,18 +366,18 @@ function About() {
       background: "linear-gradient(170deg, #0a0a0a 0%, #141414 40%, #1a1a1a 100%)",
       padding: "100px clamp(20px, 5vw, 60px)", color: "#fff"
     }}>
-      <div className="about-grid" style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", gap: "60px", alignItems: "center", flexWrap: "wrap" }}>
-        <div style={{ flex: "0 0 280px", textAlign: "center" }}>
+      <div className="about-grid" style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", gap: "60px", alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+        <div style={{ flex: "0 1 280px", textAlign: "center", margin: "0 auto" }}>
           <div style={{
             width: "220px", height: "280px", borderRadius: "8px", margin: "0 auto",
             overflow: "hidden"
           }}>
-            <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+            <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center" }} />
           </div>
           <p style={{ marginTop: "16px", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
         </div>
-        <div style={{ flex: 1, minWidth: "300px" }}>
+        <div className="about-bio" style={{ flex: "1 1 420px", minWidth: "300px", maxWidth: "620px" }}>
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
           <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
             Real Editorial Experience.<br />Real Results.
