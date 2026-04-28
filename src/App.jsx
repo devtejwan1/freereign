@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const MEDIA_LOGOS = [
-  { name: "CTV News", img: "/logos/ctv-news-updated.png" },
+  { name: "CTV News", img: "/logos/ctv-news.svg" },
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Forbes", img: "/logos/forbes-updated.png" },
   { name: "The Logic", img: "/logos/the-logic.png" },
@@ -14,6 +14,17 @@ const MEDIA_LOGOS = [
   { name: "Cointelegraph", img: "/logos/cointelegraph.png" },
   { name: "American Banker", img: "/logos/american-banker.png" },
   { name: "The Defiant", img: "/logos/the-defiant.png" },
+];
+
+const MOBILE_MEDIA_LOGOS = [
+  { name: "Forbes", img: "/logos/forbes-updated.png" },
+  { name: "CBC News", img: "/logos/cbc-news-updated.png" },
+  { name: "Bloomberg", img: "/logos/bloomberg-updated.png" },
+  { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
+  { name: "CTV News", img: "/logos/ctv-news.svg" },
+  { name: "Financial Post", img: "/logos/financial-post.png" },
+  { name: "BetaKit", img: "/logos/betakit-updated.png" },
+  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
 ];
 
 const TETRA_HEADLINES = [
@@ -77,7 +88,7 @@ const SERVICES = [
 ];
 
 const LOGO_IMG_MAP = {
-  "CTV News": "/logos/ctv-news-updated.png",
+  "CTV News": "/logos/ctv-news.svg",
   "CBC News": "/logos/cbc-news-updated.png",
   "Forbes": "/logos/forbes-updated.png",
   "The Logic": "/logos/the-logic.png",
@@ -137,6 +148,14 @@ function logoStyle(name, scale = 1, fitMap = LOGO_FIT) {
   };
 }
 
+function marqueeLogoStyle(name) {
+  return {
+    ...logoStyle(name, 1, MARQUEE_LOGO_FIT),
+    objectPosition: "center",
+    maxWidth: "100%",
+  };
+}
+
 function PressLogo({ name, variant = "default" }) {
   const src = LOGO_IMG_MAP[name];
   if (!src) return <span style={{ fontFamily: "Georgia,serif", fontWeight: 700, fontSize: "0.85rem", color: "#1a1a1a" }}>{name}</span>;
@@ -157,20 +176,57 @@ function PressLogo({ name, variant = "default" }) {
 
 function Marquee() {
   return (
-    <div style={{ overflow: "hidden", padding: "40px 0", background: "#fafafa", borderTop: "1px solid #eee", borderBottom: "1px solid #eee" }}>
-      <p style={{ textAlign: "center", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#999", marginBottom: "24px", fontWeight: 600 }}>Positioned for Real Coverage</p>
-      <div style={{ display: "flex", alignItems: "center", animation: "marquee 38s linear infinite", width: "max-content" }}>
+    <div className="media-logo-band" style={{ overflow: "hidden", padding: "40px 0", background: "#fafafa", borderTop: "1px solid #eee", borderBottom: "1px solid #eee" }}>
+      <p className="media-logo-heading" style={{ textAlign: "center", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#999", marginBottom: "24px", fontWeight: 600 }}>Positioned for Real Coverage</p>
+      <div className="media-logo-marquee" style={{ display: "flex", alignItems: "center", animation: "marquee 38s linear infinite", width: "max-content" }}>
         {[0, 1, 2].map(group => (
           <div key={group} style={{ display: "flex", alignItems: "center", gap: "clamp(28px, 3.6vw, 46px)", paddingRight: "clamp(28px, 3.6vw, 46px)" }}>
             {MEDIA_LOGOS.map((logo, i) => (
               <div key={`${group}-${i}`} style={{ flex: "0 0 auto", height: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <img src={logo.img} alt={logo.name} style={logoStyle(logo.name, 1, MARQUEE_LOGO_FIT)} />
+                <img src={logo.img} alt={logo.name} style={marqueeLogoStyle(logo.name)} />
               </div>
             ))}
           </div>
         ))}
       </div>
-      <style>{`@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }`}</style>
+      <div className="media-logo-grid">
+        {MOBILE_MEDIA_LOGOS.map((logo, i) => (
+          <div key={i} className="media-logo-cell">
+            <img src={logo.img} alt={logo.name} style={marqueeLogoStyle(logo.name)} />
+          </div>
+        ))}
+      </div>
+      <style>{`
+        .media-logo-grid { display: none; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }
+        @media (max-width: 768px) {
+          .media-logo-band { padding: 34px 20px !important; }
+          .media-logo-heading { margin-bottom: 22px !important; }
+          .media-logo-marquee { display: none !important; }
+          .media-logo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 18px;
+            row-gap: 20px;
+            align-items: center;
+            max-width: 360px;
+            margin: 0 auto;
+          }
+          .media-logo-cell {
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+          }
+          .media-logo-cell img {
+            max-width: 132px !important;
+            height: auto !important;
+            max-height: 34px !important;
+            object-position: center !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
