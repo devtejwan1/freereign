@@ -110,8 +110,24 @@ const LOGO_FIT = {
   "Thinking Crypto": { height: 25, width: 142 },
 };
 
-function logoStyle(name, scale = 1) {
-  const fit = LOGO_FIT[name] || { height: 24, width: 140 };
+const MARQUEE_LOGO_FIT = {
+  "CTV News": { height: 30, width: 128 },
+  "CBC News": { height: 22, width: 132 },
+  "Forbes": { height: 24, width: 108 },
+  "The Logic": { height: 23, width: 112 },
+  "Bloomberg": { height: 22, width: 140 },
+  "The Globe and Mail": { height: 22, width: 150 },
+  "BNN Bloomberg": { height: 28, width: 124 },
+  "Financial Post": { height: 22, width: 132 },
+  "BetaKit": { height: 25, width: 118 },
+  "CoinDesk": { height: 29, width: 142 },
+  "Cointelegraph": { height: 34, width: 108 },
+  "American Banker": { height: 22, width: 136 },
+  "The Defiant": { height: 24, width: 116 },
+};
+
+function logoStyle(name, scale = 1, fitMap = LOGO_FIT) {
+  const fit = fitMap[name] || { height: 24, width: 140 };
   return {
     height: `${fit.height * scale}px`,
     width: `${fit.width * scale}px`,
@@ -140,14 +156,17 @@ function PressLogo({ name, variant = "default" }) {
 }
 
 function Marquee() {
-  const items = [...MEDIA_LOGOS, ...MEDIA_LOGOS, ...MEDIA_LOGOS];
   return (
     <div style={{ overflow: "hidden", padding: "40px 0", background: "#fafafa", borderTop: "1px solid #eee", borderBottom: "1px solid #eee" }}>
       <p style={{ textAlign: "center", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#999", marginBottom: "24px", fontWeight: 600 }}>Positioned for Real Coverage</p>
-      <div style={{ display: "flex", alignItems: "center", animation: "marquee 35s linear infinite", width: "fit-content" }}>
-        {items.map((logo, i) => (
-          <div key={i} style={{ flex: "0 0 auto", width: "205px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <img src={logo.img} alt={logo.name} style={logoStyle(logo.name, 1.08)} />
+      <div style={{ display: "flex", alignItems: "center", animation: "marquee 38s linear infinite", width: "max-content" }}>
+        {[0, 1, 2].map(group => (
+          <div key={group} style={{ display: "flex", alignItems: "center", gap: "clamp(28px, 3.6vw, 46px)", paddingRight: "clamp(28px, 3.6vw, 46px)" }}>
+            {MEDIA_LOGOS.map((logo, i) => (
+              <div key={`${group}-${i}`} style={{ flex: "0 0 auto", height: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img src={logo.img} alt={logo.name} style={logoStyle(logo.name, 1, MARQUEE_LOGO_FIT)} />
+              </div>
+            ))}
           </div>
         ))}
       </div>
@@ -180,23 +199,22 @@ function IntroAnimation({ onComplete }) {
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 120);
     const t2 = setTimeout(() => setPhase(2), 850);
-    const t3 = setTimeout(() => setPhase(3), 1850);
-    const t4 = setTimeout(() => setPhase(4), 2480);
-    const t5 = setTimeout(() => setPhase(5), 3220);
-    const t6 = setTimeout(() => onComplete(), 3650);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); clearTimeout(t6); };
+    const t3 = setTimeout(() => setPhase(3), 2450);
+    const t4 = setTimeout(() => setPhase(4), 3180);
+    const t5 = setTimeout(() => onComplete(), 3600);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
   }, []);
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 9999, background: "#050505",
-      opacity: phase >= 5 ? 0 : 1, transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1)",
-      pointerEvents: phase >= 5 ? "none" : "all", overflow: "hidden"
+      opacity: phase >= 4 ? 0 : 1, transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1)",
+      pointerEvents: phase >= 4 ? "none" : "all", overflow: "hidden"
     }}>
       <div className="intro-logo-wrap" style={{
         opacity: phase >= 1 ? 1 : 0,
-        left: phase >= 4 ? "clamp(16px, 4vw, 60px)" : "50%",
-        top: phase >= 4 ? "48px" : "50%",
-        transform: phase >= 4
+        left: phase >= 3 ? "clamp(16px, 4vw, 60px)" : "50%",
+        top: phase >= 3 ? "48px" : "50%",
+        transform: phase >= 3
           ? "translate(0, -50%) scale(0.52)"
           : phase >= 1
             ? "translate(-50%, -50%) translateY(0) scale(1)"
@@ -208,9 +226,9 @@ function IntroAnimation({ onComplete }) {
         }} />
         <span className="intro-dot-mask" style={{ opacity: phase >= 2 ? 0 : 1 }} />
         <span className="intro-signal-dot" style={{
-          opacity: phase >= 2 && phase < 4 ? 1 : 0,
-          transform: phase >= 3 ? "translate(-50%, -50%) scale(190)" : "translate(-50%, -50%) scale(1)",
-          animation: phase === 2 ? "introSignalPulse 1.05s ease-in-out infinite" : "none",
+          opacity: phase >= 2 ? 1 : 0,
+          transform: "translate(-50%, -50%) scale(1)",
+          animation: phase === 2 ? "introSignalPulse 0.78s ease-in-out 2" : "none",
         }} />
       </div>
       <style>{`
