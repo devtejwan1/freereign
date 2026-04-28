@@ -93,10 +93,42 @@ const LOGO_IMG_MAP = {
   "Thinking Crypto": "/logos/thinking-crypto.png",
 };
 
+const LOGO_FIT = {
+  "CTV News": { height: 28, width: 118 },
+  "CBC News": { height: 24, width: 150 },
+  "Forbes": { height: 24, width: 108 },
+  "The Logic": { height: 24, width: 118 },
+  "Bloomberg": { height: 22, width: 150 },
+  "The Globe and Mail": { height: 22, width: 160 },
+  "BNN Bloomberg": { height: 22, width: 150 },
+  "Financial Post": { height: 23, width: 142 },
+  "BetaKit": { height: 25, width: 124 },
+  "CoinDesk": { height: 30, width: 154 },
+  "Cointelegraph": { height: 34, width: 152 },
+  "American Banker": { height: 22, width: 150 },
+  "The Defiant": { height: 25, width: 130 },
+  "Thinking Crypto": { height: 25, width: 142 },
+};
+
+function logoStyle(name, scale = 1) {
+  const fit = LOGO_FIT[name] || { height: 24, width: 140 };
+  return {
+    height: `${fit.height * scale}px`,
+    width: `${fit.width * scale}px`,
+    objectFit: "contain",
+    objectPosition: "center",
+    display: "block",
+  };
+}
+
 function PressLogo({ name }) {
   const src = LOGO_IMG_MAP[name];
   if (!src) return <span style={{ fontFamily: "Georgia,serif", fontWeight: 700, fontSize: "0.85rem", color: "#1a1a1a" }}>{name}</span>;
-  return <img src={src} alt={name} style={{ height: "24px", maxWidth: "150px", objectFit: "contain", borderRadius: "2px" }} />;
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-start", width: "160px", height: "32px" }}>
+      <img src={src} alt={name} style={logoStyle(name)} />
+    </span>
+  );
 }
 
 function Marquee() {
@@ -106,8 +138,8 @@ function Marquee() {
       <p style={{ textAlign: "center", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#999", marginBottom: "24px", fontWeight: 600 }}>Positioned for Real Coverage</p>
       <div style={{ display: "flex", alignItems: "center", animation: "marquee 35s linear infinite", width: "fit-content" }}>
         {items.map((logo, i) => (
-          <div key={i} style={{ flex: "0 0 auto", padding: "0 36px", display: "flex", alignItems: "center" }}>
-            <img src={logo.img} alt={logo.name} style={{ height: "28px", maxWidth: "160px", objectFit: "contain", borderRadius: "3px" }} />
+          <div key={i} style={{ flex: "0 0 auto", width: "205px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img src={logo.img} alt={logo.name} style={logoStyle(logo.name, 1.08)} />
           </div>
         ))}
       </div>
