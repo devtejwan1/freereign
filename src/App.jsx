@@ -270,11 +270,12 @@ function IntroAnimation({ onComplete }) {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
   }, []);
   return (
-    <div style={{
+    <div className="intro-overlay" style={{
       position: "fixed", inset: 0, zIndex: 9999, background: phase >= 3 ? "transparent" : "#050505",
       opacity: phase >= 4 ? 0 : 1,
       transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease",
-      pointerEvents: phase >= 4 ? "none" : "all", overflow: "hidden"
+      pointerEvents: phase >= 4 ? "none" : "all", overflow: "hidden",
+      "--intro-texture-opacity": phase >= 3 ? 0 : 0.25
     }}>
       <div className="intro-logo-wrap" style={{
         opacity: phase >= 4 ? 0 : phase >= 1 ? 1 : 0,
@@ -299,6 +300,17 @@ function IntroAnimation({ onComplete }) {
         }} />
       </div>
       <style>{`
+        .intro-overlay::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background: url("/abstract-geometric-texture.jpg") center / cover no-repeat;
+          opacity: var(--intro-texture-opacity, 0.25);
+          mix-blend-mode: screen;
+          transition: opacity 0.35s ease;
+        }
         .intro-logo-wrap {
           position: absolute;
           display: inline-block;
@@ -490,7 +502,7 @@ function Hero({ onNavigate }) {
       background: "#050505",
       position: "relative", overflow: "hidden", padding: "92px 24px 64px",
       "--hero-fuzz": `${scrollFuzz * 7}px`,
-      "--hero-texture-opacity": 0.34 + scrollFuzz * 0.1,
+      "--hero-texture-opacity": 0.25 + scrollFuzz * 0.03,
       "--hero-texture-scale": 1 + scrollFuzz * 0.018
     }}>
       <div className="hero-light-ceiling" />
@@ -1043,7 +1055,7 @@ export default function App() {
         }
         .charcoal-texture::before {
           background: url("/abstract-geometric-texture.jpg") center / cover no-repeat;
-          opacity: 0.28;
+          opacity: 0.25;
           mix-blend-mode: screen;
         }
         .hero-spotlight::before {
