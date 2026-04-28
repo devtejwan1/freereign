@@ -529,8 +529,9 @@ function CaseStudyPage({ data, onNavigate }) {
       <section style={{ padding: "60px clamp(20px, 5vw, 60px)", background: "#fff" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 16px" }}>The Assignment</h3>
-          <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "#555", marginBottom: "16px" }}>{data.assignment1}</p>
-          <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "#555" }}>{data.assignment2}</p>
+          {(data.assignmentParagraphs || [data.assignment1, data.assignment2]).map((paragraph, i, paragraphs) => (
+            <p key={i} style={{ fontSize: "1rem", lineHeight: 1.8, color: "#555", marginBottom: i === paragraphs.length - 1 ? 0 : "16px" }}>{paragraph}</p>
+          ))}
         </div>
       </section>
 
@@ -780,8 +781,12 @@ function Footer({ onNavigate }) {
 const TETRA_DATA = {
   title: "Tetra Digital Group",
   clientLogo: (<img src="/logos/tetra-digital-group.png" alt="Tetra Digital Group" style={{ height: "64px", width: "64px", borderRadius: "8px", objectFit: "contain", background: "#fff", padding: "8px" }} />),
-  assignment1: "Canada's digital asset sector has long operated without a unified regulatory framework, creating fragmentation and uncertainty. Against this backdrop, Tetra Digital Group faced a dual challenge: navigating an evolving regulatory environment while building the credibility required to engage sophisticated financial players.",
-  assignment2: "Our goal was to shift the conversation from speculation to infrastructure. By positioning Tetra as a trusted, regulated partner for institutional investors, we helped anchor the brand's reputation, demonstrating stability and reliability, while establishing a benchmark for institutional engagement in Canada's digital asset ecosystem.",
+  assignmentParagraphs: [
+    "Digital assets have long been viewed as speculative, which limited institutional participation. As regulatory clarity began to develop globally, Tetra Digital Group prepared to announce the launch of CADD, a Canadian-dollar stablecoin and the first to be issued by a regulated financial institution in Canada.",
+    "The announcement marked a significant milestone. It needed to clearly communicate the regulatory framework behind CADD while making the story relevant to both traditional finance and digital asset audiences.",
+    "Free Reign Media was engaged to lead media strategy, communications, and execution for the launch. The focus was on securing meaningful coverage while positioning Tetra as a credible player in Canada's evolving digital asset landscape.",
+    "The announcement resulted in coverage across top-tier outlets including The Globe and Mail, Forbes, CTV News, and Financial Post.",
+  ],
   stats: [
     { number: "30+", label: "Earned media stories in 4 months" },
     { number: "18K+", label: "Targeted North American views across two core announcements" },
