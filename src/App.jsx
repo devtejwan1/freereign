@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const MEDIA_LOGOS = [
-  { name: "CTV News", img: "/logos/ctv-news.svg" },
+  { name: "CTV News", img: "/logos/ctv-news-new.jpeg" },
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Forbes", img: "/logos/forbes-updated.png" },
   { name: "The Logic", img: "/logos/the-logic.png" },
@@ -21,7 +21,7 @@ const MOBILE_MEDIA_LOGOS = [
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Bloomberg", img: "/logos/bloomberg-updated.png" },
   { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
-  { name: "CTV News", img: "/logos/ctv-news.svg" },
+  { name: "CTV News", img: "/logos/ctv-news-new.jpeg" },
   { name: "Financial Post", img: "/logos/financial-post.png" },
   { name: "BetaKit", img: "/logos/betakit-updated.png" },
   { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
@@ -88,7 +88,7 @@ const SERVICES = [
 ];
 
 const LOGO_IMG_MAP = {
-  "CTV News": "/logos/ctv-news.svg",
+  "CTV News": "/logos/ctv-news-new.jpeg",
   "CBC News": "/logos/cbc-news-updated.png",
   "Forbes": "/logos/forbes-updated.png",
   "The Logic": "/logos/the-logic.png",
@@ -473,12 +473,25 @@ function Nav({ currentPage, onNavigate, introComplete = true }) {
 
 function Hero({ onNavigate }) {
   const [visible, setVisible] = useState(false);
+  const [scrollFuzz, setScrollFuzz] = useState(0);
   useEffect(() => { setTimeout(() => setVisible(true), 200); }, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      const distance = Math.max(window.innerHeight * 0.72, 1);
+      setScrollFuzz(Math.min(window.scrollY / distance, 1));
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     <section className="hero-section hero-spotlight charcoal-texture" style={{
       minHeight: "calc(100vh - 168px)", display: "flex", alignItems: "center", justifyContent: "center",
       background: "#050505",
-      position: "relative", overflow: "hidden", padding: "92px 24px 64px"
+      position: "relative", overflow: "hidden", padding: "92px 24px 64px",
+      "--hero-fuzz": `${scrollFuzz * 7}px`,
+      "--hero-texture-opacity": 0.34 + scrollFuzz * 0.1,
+      "--hero-texture-scale": 1 + scrollFuzz * 0.018
     }}>
       <div className="hero-light-ceiling" />
       <div className="hero-light-pool" />
@@ -587,7 +600,7 @@ function WorkPreview({ onNavigate }) {
             { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png" },
             { name: "Symbiotic", desc: "Elevated a technical startup to an essential partner for global capital. 3 national TV appearances.", page: "symbiotic", logoImg: "/symbiotic-logo.jpg", logoStyle: symbioticLogoFrame },
           ].map((c, i) => (
-            <div key={i} onClick={() => onNavigate(c.page)} style={{
+            <div key={i} className="charcoal-texture" onClick={() => onNavigate(c.page)} style={{
               background: "#0a0a0a", borderRadius: "12px", padding: "40px 32px", cursor: "pointer",
               transition: "transform 0.3s ease, box-shadow 0.3s ease", color: "#fff"
             }}
@@ -661,7 +674,7 @@ function CaseStudyPage({ data, onNavigate }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div style={{ paddingTop: "64px" }}>
-      <section style={{
+      <section className="charcoal-texture" style={{
         background: "linear-gradient(160deg, #0a0a0a 0%, #1a1a1a 100%)",
         padding: "80px clamp(20px, 5vw, 60px)", color: "#fff"
       }}>
@@ -692,7 +705,7 @@ function CaseStudyPage({ data, onNavigate }) {
         </div>
       </section>
 
-      <section style={{ padding: "60px clamp(20px, 5vw, 60px)", background: "#0a0a0a" }}>
+      <section className="charcoal-texture" style={{ padding: "60px clamp(20px, 5vw, 60px)", background: "#0a0a0a" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", fontWeight: 700, color: "#fff", margin: "0 0 36px" }}>By the Numbers</h3>
           <div className="stats-row" style={{ display: "flex", gap: "48px", flexWrap: "wrap", marginBottom: "0" }}>
@@ -761,7 +774,7 @@ function ContactPage({ onNavigate }) {
 
   return (
     <div style={{ paddingTop: "64px" }}>
-      <section style={{
+      <section className="charcoal-texture" style={{
         background: "linear-gradient(160deg, #0a0a0a 0%, #1a1a1a 100%)",
         padding: "60px clamp(20px, 5vw, 60px) 40px", color: "#fff"
       }}>
@@ -880,7 +893,7 @@ function PrivacyPage({ onNavigate }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div style={{ paddingTop: "64px" }}>
-      <section style={{ background: "#0a0a0a", padding: "60px clamp(20px, 5vw, 60px) 40px", color: "#fff" }}>
+      <section className="charcoal-texture" style={{ background: "#0a0a0a", padding: "60px clamp(20px, 5vw, 60px) 40px", color: "#fff" }}>
         <div style={{ maxWidth: "700px", margin: "0 auto" }}>
           <span onClick={() => onNavigate("home")} style={{
             fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", cursor: "pointer",
@@ -913,7 +926,7 @@ function PrivacyPage({ onNavigate }) {
 
 function Footer({ onNavigate }) {
   return (
-    <footer style={{
+    <footer className="charcoal-texture" style={{
       background: "#0a0a0a", padding: "40px clamp(20px, 5vw, 60px)", borderTop: "1px solid #1a1a1a"
     }}>
       <div className="footer-inner" style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
@@ -1007,7 +1020,13 @@ export default function App() {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          z-index: -1;
+          z-index: 0;
+          border-radius: inherit;
+        }
+        .paper-texture > *,
+        .charcoal-texture > * {
+          position: relative;
+          z-index: 1;
         }
         .paper-texture::before {
           background:
@@ -1023,17 +1042,16 @@ export default function App() {
             linear-gradient(135deg, rgba(10,10,10,0.012) 0 1px, transparent 1px 7px);
         }
         .charcoal-texture::before {
-          background:
-            radial-gradient(circle at 82% 12%, rgba(200,16,46,0.06), transparent 30%),
-            radial-gradient(circle at 16% 82%, rgba(255,255,255,0.025), transparent 26%),
-            linear-gradient(135deg, rgba(255,255,255,0.014) 0 1px, transparent 1px 8px);
-          opacity: 0.55;
+          background: url("/abstract-geometric-texture.jpg") center / cover no-repeat;
+          opacity: 0.28;
+          mix-blend-mode: screen;
         }
         .hero-spotlight::before {
-          background:
-            radial-gradient(ellipse at 50% 18%, rgba(255,255,255,0.12), rgba(255,255,255,0.04) 22%, transparent 56%),
-            linear-gradient(135deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 8px);
-          opacity: 1;
+          background: url("/abstract-geometric-texture.jpg") center / cover no-repeat;
+          filter: blur(var(--hero-fuzz, 0px));
+          opacity: var(--hero-texture-opacity, 0.34);
+          transform: scale(var(--hero-texture-scale, 1));
+          transition: filter 0.12s linear, opacity 0.12s linear, transform 0.12s linear;
         }
         .hero-light-ceiling,
         .hero-light-pool,
