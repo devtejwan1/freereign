@@ -170,59 +170,43 @@ function IntroAnimation({ onComplete }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 120);
-    const t2 = setTimeout(() => setPhase(2), 2050);
-    const t3 = setTimeout(() => onComplete(), 2800);
+    const t2 = setTimeout(() => setPhase(2), 1850);
+    const t3 = setTimeout(() => onComplete(), 2350);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
   return (
     <div style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "#050505", display: "flex",
-      alignItems: "center", justifyContent: "center", flexDirection: "column",
-      opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
+      position: "fixed", inset: 0, zIndex: 9999, background: "transparent",
+      opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
       pointerEvents: phase >= 2 ? "none" : "all", overflow: "hidden"
     }}>
-      <div style={{
-        opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0) scale(1)" : "translateY(10px) scale(0.98)",
-        transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)", textAlign: "center",
-        padding: "24px", position: "relative", zIndex: 2
-      }}>
-        <div className="intro-logo-wrap" style={{ position: "relative", display: "inline-block" }}>
-          <img className="intro-logo-mark" src="/logo-light.png" alt="Free Reign Media" style={{
-            height: "clamp(70px, 12vw, 118px)", objectFit: "contain",
-            opacity: phase >= 1 ? 1 : 0,
-            transform: phase >= 1 ? "scale(1)" : "scale(0.985)",
-            filter: phase >= 1 ? "drop-shadow(0 20px 44px rgba(0,0,0,0.55)) blur(0)" : "drop-shadow(0 20px 44px rgba(0,0,0,0.55)) blur(4px)",
-            transition: "opacity 0.7s ease 0.28s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.28s, filter 0.9s ease 0.28s"
-          }} />
-          <span className="intro-red-dot" style={{
-            top: phase >= 1 ? "16%" : "-42%",
-            left: phase >= 1 ? "60.9%" : "50%",
-            opacity: phase >= 1 ? 1 : 0,
-          }} />
-        </div>
-        <div style={{
-          fontSize: "clamp(0.55rem, 1.2vw, 0.7rem)", textTransform: "uppercase", letterSpacing: "0.25em",
-          color: "rgba(255,255,255,0.4)", marginTop: "20px", fontWeight: 500,
-          opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0)" : "translateY(8px)",
-          transition: "opacity 0.8s ease 0.85s, transform 0.8s ease 0.85s"
-        }}>We Engineer Credibility.</div>
-      </div>
+      <span className="intro-dot-cover" style={{
+        top: phase >= 1 ? "42px" : "50%",
+        left: phase >= 1 ? "86px" : "50%",
+        transform: phase >= 1 ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(190)",
+        opacity: phase >= 2 ? 0 : 1,
+      }} />
       <style>{`
-        .intro-red-dot {
+        .intro-dot-cover {
           position: absolute;
-          width: clamp(8px, 1.2vw, 12px);
-          height: clamp(8px, 1.2vw, 12px);
+          width: 16px;
+          height: 16px;
           border-radius: 999px;
           background: #c8102e;
-          box-shadow: 0 0 0 0 rgba(200,16,46,0.45), 0 0 28px rgba(200,16,46,0.65);
-          transform: translate(-50%, -50%);
-          transition: top 0.9s cubic-bezier(0.16, 1, 0.3, 1), left 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-          animation: introDotPulse 1.25s ease-in-out 0.75s 2;
-          z-index: 3;
+          box-shadow: 0 0 34px rgba(200,16,46,0.45);
+          transform-origin: center;
+          transition:
+            top 1.35s cubic-bezier(0.77, 0, 0.175, 1),
+            left 1.35s cubic-bezier(0.77, 0, 0.175, 1),
+            transform 1.35s cubic-bezier(0.77, 0, 0.175, 1),
+            opacity 0.35s ease;
+          will-change: top, left, transform, opacity;
         }
-        @keyframes introDotPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0.45), 0 0 28px rgba(200,16,46,0.65); }
-          50% { box-shadow: 0 0 0 16px rgba(200,16,46,0), 0 0 38px rgba(200,16,46,0.75); }
+        @media (max-width: 768px) {
+          .intro-dot-cover {
+            width: 14px;
+            height: 14px;
+          }
         }
       `}</style>
     </div>
