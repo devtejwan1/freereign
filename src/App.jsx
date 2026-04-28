@@ -454,6 +454,10 @@ function WorkPreview({ onNavigate }) {
     width: "72px", height: "72px", borderRadius: "10px", background: "#fff",
     padding: "10px", objectFit: "contain", display: "block"
   };
+  const symbioticLogoFrame = {
+    ...clientLogoFrame,
+    background: "#C7FF4D",
+  };
   return (
     <section id="work" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fafafa" }}>
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
@@ -462,7 +466,7 @@ function WorkPreview({ onNavigate }) {
         <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
           {[
             { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png" },
-            { name: "Symbiotic", desc: "Elevated a technical startup to an essential partner for global capital. 3 national TV appearances.", page: "symbiotic", logoImg: "/symbiotic-logo.jpg" },
+            { name: "Symbiotic", desc: "Elevated a technical startup to an essential partner for global capital. 3 national TV appearances.", page: "symbiotic", logoImg: "/symbiotic-logo.jpg", logoStyle: symbioticLogoFrame },
           ].map((c, i) => (
             <div key={i} onClick={() => onNavigate(c.page)} style={{
               background: "#0a0a0a", borderRadius: "12px", padding: "40px 32px", cursor: "pointer",
@@ -473,7 +477,7 @@ function WorkPreview({ onNavigate }) {
             >
               <div style={{ marginBottom: "16px" }}>
                 {c.logoImg ? (
-                  <img src={c.logoImg} alt={c.name} style={clientLogoFrame} />
+                  <img src={c.logoImg} alt={c.name} style={c.logoStyle || clientLogoFrame} />
                 ) : (
                   <div style={{ display: "inline-flex", background: c.logoBg, padding: "8px 14px", borderRadius: "6px" }}>
                     <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#fff", letterSpacing: "0.1em" }}>{c.logoText}</span>
@@ -830,7 +834,7 @@ const TETRA_DATA = {
 
 const SYMBIOTIC_DATA = {
   title: "Symbiotic",
-  clientLogo: (<img src="/symbiotic-logo.jpg" alt="Symbiotic" style={{ height: "76px", width: "76px", borderRadius: "10px", objectFit: "contain", background: "#fff", padding: "10px" }} />),
+  clientLogo: (<img src="/symbiotic-logo.jpg" alt="Symbiotic" style={{ height: "76px", width: "76px", borderRadius: "10px", objectFit: "contain", background: "#C7FF4D", padding: "10px" }} />),
   assignment1: "The digital asset sector is currently defined by fragmented markets and trapped liquidity. Symbiotic entered the market to unlock this capital, providing the infrastructure to mobilize underutilized assets as institutional-grade security for the broader financial ecosystem.",
   assignment2: "We were tasked with elevating Symbiotic from a technical startup to an essential partner for global capital. Using real editorial execution, we pivoted the narrative from technical design to institutional opportunity—positioning leadership as the definitive voices for how traditional institutions safely navigate decentralized technology.",
   stats: [
