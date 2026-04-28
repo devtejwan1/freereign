@@ -28,21 +28,21 @@ const MOBILE_MEDIA_LOGOS = [
 ];
 
 const TETRA_HEADLINES = [
-  { outlet: "BetaKit", text: "Tetra Trust parent secures backing from banks, FinTechs to launch Canadian stablecoin", url: "https://betakit.com" },
-  { outlet: "Forbes", text: "Banks Push To Block Stablecoin Yields", url: "https://forbes.com" },
-  { outlet: "The Globe and Mail", text: "Federal budget 2025: Plan for stablecoin rules to usher in Canada's 'digital dollar era,' advocates say", url: "https://theglobeandmail.com" },
-  { outlet: "American Banker", text: "Inside a Canadian stablecoin consortium", url: "https://americanbanker.com" },
-  { outlet: "CBC News", text: "A digital dollar? Why this Alberta company wants to launch a Canadian stablecoin", url: "https://cbc.ca" },
-  { outlet: "BNN Bloomberg", text: "Digital currency could ensure the Canadian dollar remains relevant: Lavallée on Canadian stablecoin", url: "https://bnnbloomberg.ca" },
+  { outlet: "BetaKit", text: "Tetra Trust parent secures backing from banks, FinTechs to launch Canadian stablecoin", url: "https://betakit.com/tetra-trust-parent-secures-backing-from-banks-fintech-to-launch-canadian-stablecoin-and-grow-beyond-crypto-custody/" },
+  { outlet: "Forbes", text: "Banks Push To Block Stablecoin Yields", url: "https://www.forbes.com/sites/beccabratcher/2025/09/19/banks-push-to-block-stablecoin-yields/" },
+  { outlet: "The Globe and Mail", text: "Federal budget 2025: Plan for stablecoin rules to usher in Canada's 'digital dollar era,' advocates say", url: "https://www.theglobeandmail.com/business/article-federal-budget-2025-stablecoin-legislation/" },
+  { outlet: "American Banker", text: "Inside a Canadian stablecoin consortium", url: "https://www.americanbanker.com/payments/news/inside-a-canadian-stablecoin-consortium" },
+  { outlet: "CBC News", text: "A digital dollar? Why this Alberta company wants to launch a Canadian stablecoin", url: "https://www.cbc.ca/news/business/tetra-group-digital-dollar-stablecoin-1.7628075" },
+  { outlet: "BNN Bloomberg", text: "Digital currency could ensure the Canadian dollar remains relevant: Lavallée on Canadian stablecoin", url: "https://www.youtube.com/watch?v=heW6Q7dBYLs&t=3s" },
 ];
 
 const SYMBIOTIC_HEADLINES = [
-  { outlet: "Bloomberg", text: "Canadian Crypto Firms Struggle to Create First Local Stablecoin", url: "https://bloomberg.com" },
-  { outlet: "CTV News", text: "'Massive innovation opportunity': Expert on stablecoins' regulatory framework", url: "https://ctvnews.ca" },
-  { outlet: "Cointelegraph", text: "Op-ed: Canada will be left behind in the global crypto race", url: "https://cointelegraph.com" },
-  { outlet: "The Defiant", text: "Symbiotic Partners with Chainlink and Lombard for Cross-Chain LBTC Transfers", url: "https://thedefiant.io" },
-  { outlet: "Thinking Crypto", text: "Symbiotic is Revolutionizing Crypto Staking!", url: "https://thinkingcrypto.com" },
-  { outlet: "BNN Bloomberg", text: "U.S. Senate passes stablecoin bill for crypto industry", url: "https://bnnbloomberg.ca" },
+  { outlet: "Bloomberg", text: "Canadian Crypto Firms Struggle to Create First Local Stablecoin", url: "https://www.bloomberg.com/news/articles/2025-06-20/canadian-crypto-firms-struggle-to-create-first-local-stablecoin" },
+  { outlet: "CTV News", text: "'Massive innovation opportunity': Expert on stablecoins' regulatory framework", url: "https://www.ctvnews.ca/business/article/massive-innovation-opportunity-expert-on-stablecoins-regulatory-framework/" },
+  { outlet: "Cointelegraph", text: "Op-ed: Canada will be left behind in the global crypto race", url: "https://cointelegraph.com/news/canada-will-be-left-behind-in-the-global-crypto-race" },
+  { outlet: "The Defiant", text: "Symbiotic Partners with Chainlink and Lombard for Cross-Chain LBTC Transfers", url: "https://thedefiant.io/news/defi/symbiotic-partners-with-chainlink-and-lombard-for-cross-chain-lbtc-transfers" },
+  { outlet: "Thinking Crypto", text: "Symbiotic is Revolutionizing Crypto Staking!", url: "https://www.youtube.com/watch?v=iW_IC3woktA&t=1s" },
+  { outlet: "BNN Bloomberg", text: "U.S. Senate passes stablecoin bill for crypto industry", url: "https://www.youtube.com/watch?v=elXqMpdRORA" },
 ];
 
 const SERVICES = [
@@ -265,22 +265,24 @@ function IntroAnimation({ onComplete }) {
     const t1 = setTimeout(() => setPhase(1), 120);
     const t2 = setTimeout(() => setPhase(2), 850);
     const t3 = setTimeout(() => setPhase(3), 2450);
-    const t4 = setTimeout(() => setPhase(4), 3180);
-    const t5 = setTimeout(() => onComplete(), 3600);
+    const t4 = setTimeout(() => setPhase(4), 3400);
+    const t5 = setTimeout(() => onComplete(), 3820);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
   }, []);
   return (
     <div style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "#050505",
-      opacity: phase >= 4 ? 0 : 1, transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1)",
+      position: "fixed", inset: 0, zIndex: 9999, background: phase >= 3 ? "transparent" : "#050505",
+      opacity: phase >= 4 ? 0 : 1,
+      transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease",
       pointerEvents: phase >= 4 ? "none" : "all", overflow: "hidden"
     }}>
       <div className="intro-logo-wrap" style={{
-        opacity: phase >= 1 ? 1 : 0,
+        opacity: phase >= 4 ? 0 : phase >= 1 ? 1 : 0,
         left: phase >= 3 ? "clamp(16px, 4vw, 60px)" : "50%",
         top: phase >= 3 ? "48px" : "50%",
+        transformOrigin: phase >= 3 ? "left center" : "center center",
         transform: phase >= 3
-          ? "translate(0, -50%) scale(0.52)"
+          ? "translate(0, -50%) scale(0.583333)"
           : phase >= 1
             ? "translate(-50%, -50%) translateY(0) scale(1)"
             : "translate(-50%, -50%) translateY(8px) scale(0.98)",
@@ -303,9 +305,9 @@ function IntroAnimation({ onComplete }) {
           z-index: 2;
           transition:
             opacity 0.7s ease,
-            left 0.72s cubic-bezier(0.16, 1, 0.3, 1),
-            top 0.72s cubic-bezier(0.16, 1, 0.3, 1),
-            transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+            left 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            top 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
           will-change: left, top, transform, opacity;
         }
         .intro-dot-mask {
@@ -345,7 +347,7 @@ function IntroAnimation({ onComplete }) {
   );
 }
 
-function Nav({ currentPage, onNavigate }) {
+function Nav({ currentPage, onNavigate, introComplete = true }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
@@ -376,7 +378,10 @@ function Nav({ currentPage, onNavigate }) {
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
         background: scrolled || mobileOpen ? "rgba(10,10,10,0.97)" : "transparent",
         backdropFilter: scrolled || mobileOpen ? "blur(12px)" : "none",
-        transition: "all 0.4s ease", padding: "0 clamp(16px, 4vw, 60px)"
+        opacity: introComplete ? 1 : 0,
+        pointerEvents: introComplete ? "auto" : "none",
+        transition: "opacity 0.28s ease, background 0.4s ease, backdrop-filter 0.4s ease",
+        padding: "0 clamp(16px, 4vw, 60px)"
       }}>
         <div style={{
           maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -470,18 +475,16 @@ function Hero({ onNavigate }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { setTimeout(() => setVisible(true), 200); }, []);
   return (
-    <section style={{
-      minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-      background: "linear-gradient(160deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)",
-      position: "relative", overflow: "hidden", padding: "80px 24px"
+    <section className="hero-section hero-spotlight charcoal-texture" style={{
+      minHeight: "calc(100vh - 168px)", display: "flex", alignItems: "center", justifyContent: "center",
+      background: "#050505",
+      position: "relative", overflow: "hidden", padding: "92px 24px 64px"
     }}>
+      <div className="hero-light-ceiling" />
+      <div className="hero-light-pool" />
+      <div className="hero-light-floor" />
       <div style={{
-        position: "absolute", top: "-20%", right: "-10%", width: "60vw", height: "60vw",
-        borderRadius: "50%", background: "radial-gradient(circle, rgba(200,16,46,0.06) 0%, transparent 70%)",
-        pointerEvents: "none"
-      }} />
-      <div style={{
-        textAlign: "center", maxWidth: "800px", opacity: visible ? 1 : 0,
+        position: "relative", zIndex: 1, textAlign: "center", maxWidth: "800px", opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(30px)",
         transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
@@ -508,7 +511,7 @@ function Hero({ onNavigate }) {
 
 function About() {
   return (
-    <section id="about" style={{
+    <section id="about" className="charcoal-texture" style={{
       background: "linear-gradient(170deg, #0a0a0a 0%, #141414 40%, #1a1a1a 100%)",
       padding: "100px clamp(20px, 5vw, 60px)", color: "#fff"
     }}>
@@ -542,7 +545,7 @@ function About() {
 
 function Services() {
   return (
-    <section id="services" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fff" }}>
+    <section id="services" className="paper-texture" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fff" }}>
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>What We Do</p>
         <div className="service-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "28px", marginTop: "40px" }}>
@@ -575,7 +578,7 @@ function WorkPreview({ onNavigate }) {
     background: "#C7FF4D",
   };
   return (
-    <section id="work" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fafafa" }}>
+    <section id="work" className="paper-texture paper-warm" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fafafa" }}>
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Selected Work</p>
         <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#0a0a0a", margin: "0 0 50px" }}>Case Studies</h2>
@@ -614,7 +617,7 @@ function WorkPreview({ onNavigate }) {
 
 function Testimonial() {
   return (
-    <section style={{ padding: "80px clamp(20px, 5vw, 60px)", background: "#fff" }}>
+    <section className="paper-texture" style={{ padding: "80px clamp(20px, 5vw, 60px)", background: "#fff" }}>
       <div style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center" }}>
         <svg width="32" height="32" viewBox="0 0 24 24" fill="#c8102e" style={{ marginBottom: "20px", opacity: 0.3 }}>
           <path d="M3 13h2a4 4 0 014 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-5zm10 0h2a4 4 0 014 4v1a2 2 0 01-2 2h-2a2 2 0 01-2-2v-5zM3 13V8a5 5 0 015-5h1m5 10V8a5 5 0 015-5h1"/>
@@ -631,7 +634,7 @@ function Testimonial() {
 
 function ContactCTA({ onNavigate }) {
   return (
-    <section id="contact" style={{
+    <section id="contact" className="charcoal-texture" style={{
       padding: "100px clamp(20px, 5vw, 60px)",
       background: "linear-gradient(160deg, #0a0a0a 0%, #1a1a1a 100%)", color: "#fff", textAlign: "center"
     }}>
@@ -993,7 +996,107 @@ export default function App() {
         html { scroll-behavior: smooth; }
         ::selection { background: #c8102e; color: #fff; }
         input:focus, textarea:focus { border-color: #c8102e !important; }
+        .paper-texture,
+        .charcoal-texture {
+          position: relative;
+          isolation: isolate;
+        }
+        .paper-texture::before,
+        .charcoal-texture::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          z-index: -1;
+        }
+        .paper-texture::before {
+          background:
+            radial-gradient(circle at 18% 12%, rgba(200,16,46,0.018), transparent 30%),
+            radial-gradient(circle at 88% 22%, rgba(10,10,10,0.018), transparent 26%),
+            linear-gradient(135deg, rgba(10,10,10,0.012) 0 1px, transparent 1px 7px);
+          opacity: 0.75;
+        }
+        .paper-warm::before {
+          background:
+            radial-gradient(circle at 20% 15%, rgba(200,16,46,0.022), transparent 30%),
+            radial-gradient(circle at 86% 20%, rgba(10,10,10,0.02), transparent 26%),
+            linear-gradient(135deg, rgba(10,10,10,0.012) 0 1px, transparent 1px 7px);
+        }
+        .charcoal-texture::before {
+          background:
+            radial-gradient(circle at 82% 12%, rgba(200,16,46,0.06), transparent 30%),
+            radial-gradient(circle at 16% 82%, rgba(255,255,255,0.025), transparent 26%),
+            linear-gradient(135deg, rgba(255,255,255,0.014) 0 1px, transparent 1px 8px);
+          opacity: 0.55;
+        }
+        .hero-spotlight::before {
+          background:
+            radial-gradient(ellipse at 50% 18%, rgba(255,255,255,0.12), rgba(255,255,255,0.04) 22%, transparent 56%),
+            linear-gradient(135deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 8px);
+          opacity: 1;
+        }
+        .hero-light-ceiling,
+        .hero-light-pool,
+        .hero-light-floor {
+          position: absolute;
+          left: 50%;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .hero-light-ceiling {
+          top: 82px;
+          width: min(54vw, 720px);
+          height: 58px;
+          transform: translateX(-50%);
+          background:
+            radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.38) 12%, rgba(255,255,255,0.12) 31%, transparent 72%);
+          filter: blur(10px);
+          opacity: 0.78;
+        }
+        .hero-light-pool {
+          top: 82px;
+          width: min(84vw, 1100px);
+          height: 76%;
+          transform: translateX(-50%);
+          background:
+            radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.15) 17%, rgba(255,255,255,0.055) 42%, transparent 72%);
+          filter: blur(14px);
+          opacity: 0.9;
+        }
+        .hero-light-floor {
+          bottom: 44px;
+          width: min(72vw, 920px);
+          height: 92px;
+          transform: translateX(-50%);
+          background:
+            radial-gradient(ellipse at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 28%, transparent 72%);
+          filter: blur(18px);
+          opacity: 0.7;
+        }
         @media (max-width: 768px) {
+          .hero-section {
+            min-height: calc(100vh - 166px) !important;
+            min-height: calc(100svh - 166px) !important;
+            padding: 92px 24px 44px !important;
+            align-items: center !important;
+          }
+          .hero-light-ceiling {
+            top: 86px;
+            width: 82vw;
+            height: 42px;
+          }
+          .hero-light-pool {
+            top: 86px;
+            width: 118vw;
+            height: 74%;
+            opacity: 0.76;
+          }
+          .hero-light-floor {
+            bottom: 28px;
+            width: 92vw;
+            height: 62px;
+            opacity: 0.48;
+          }
           .about-grid { flex-direction: column !important; gap: 32px !important; text-align: center; }
           .about-grid > div:first-child { flex: none !important; }
           .about-bio { text-align: center !important; }
@@ -1012,7 +1115,7 @@ export default function App() {
 
       {!introComplete && <IntroAnimation onComplete={() => setIntroComplete(true)} />}
 
-      <Nav currentPage={page} onNavigate={navigate} />
+      <Nav currentPage={page} onNavigate={navigate} introComplete={introComplete} />
 
       {page === "home" && (
         <>
