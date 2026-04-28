@@ -169,36 +169,61 @@ function HeadlineCard({ item }) {
 function IntroAnimation({ onComplete }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 100);
-    const t2 = setTimeout(() => setPhase(2), 2400);
-    const t3 = setTimeout(() => onComplete(), 3200);
+    const t1 = setTimeout(() => setPhase(1), 120);
+    const t2 = setTimeout(() => setPhase(2), 2100);
+    const t3 = setTimeout(() => onComplete(), 2850);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
   return (
     <div style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "#0a0a0a", display: "flex",
+      position: "fixed", inset: 0, zIndex: 9999, background: "#050505", display: "flex",
       alignItems: "center", justifyContent: "center", flexDirection: "column",
-      opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.8s ease", pointerEvents: phase >= 2 ? "none" : "all"
+      opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
+      pointerEvents: phase >= 2 ? "none" : "all", overflow: "hidden"
     }}>
+      <div className="intro-panel intro-panel-left" style={{ transform: phase >= 1 ? "translateX(-100%)" : "translateX(0)" }} />
+      <div className="intro-panel intro-panel-right" style={{ transform: phase >= 1 ? "translateX(100%)" : "translateX(0)" }} />
       <div style={{
-        opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0)" : "translateY(20px)",
-        transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)", textAlign: "center"
+        position: "absolute", width: "min(520px, 72vw)", height: "1px", background: "#c8102e",
+        transform: phase >= 1 ? "scaleX(1)" : "scaleX(0)", transformOrigin: "center",
+        opacity: phase >= 1 ? 0.9 : 0, transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease"
+      }} />
+      <div style={{
+        opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0) scale(1)" : "translateY(18px) scale(0.96)",
+        transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)", textAlign: "center",
+        padding: "24px", position: "relative", zIndex: 2
       }}>
+        <img className="intro-logo-mark" src="/logo-light.png" alt="Free Reign Media" style={{
+          height: "clamp(70px, 12vw, 118px)", objectFit: "contain",
+          clipPath: phase >= 1 ? "inset(0 0 0 0)" : "inset(0 100% 0 0)",
+          transition: "clip-path 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, filter 0.9s ease"
+        }} />
         <div style={{
-          fontSize: "clamp(2rem, 6vw, 4.5rem)", fontFamily: "'Playfair Display', Georgia, serif",
-          color: "#fff", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, display: "flex", justifyContent: "center"
-        }}><img src="/logo-light.png" alt="Free Reign Media" style={{ height: "clamp(50px, 10vw, 90px)", objectFit: "contain" }} /></div>
-        <div style={{
-          width: "60px", height: "1px", background: "#c8102e", margin: "20px auto 0",
-          opacity: phase >= 1 ? 1 : 0, transition: "opacity 1.2s ease 0.4s",
+          width: "120px", height: "1px", background: "#c8102e", margin: "22px auto 0",
+          opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease 0.65s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.65s",
           transform: phase >= 1 ? "scaleX(1)" : "scaleX(0)", transformOrigin: "center"
         }} />
         <div style={{
           fontSize: "clamp(0.55rem, 1.2vw, 0.7rem)", textTransform: "uppercase", letterSpacing: "0.25em",
           color: "rgba(255,255,255,0.4)", marginTop: "16px", fontWeight: 500,
-          opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease 0.8s"
+          opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0)" : "translateY(8px)",
+          transition: "opacity 0.8s ease 0.85s, transform 0.8s ease 0.85s"
         }}>We Engineer Credibility.</div>
       </div>
+      <style>{`
+        .intro-panel {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 50%;
+          background: #0a0a0a;
+          transition: transform 1.25s cubic-bezier(0.77, 0, 0.175, 1) 1.15s;
+          z-index: 1;
+        }
+        .intro-panel-left { left: 0; border-right: 1px solid rgba(200,16,46,0.45); }
+        .intro-panel-right { right: 0; border-left: 1px solid rgba(200,16,46,0.45); }
+        .intro-logo-mark { filter: drop-shadow(0 20px 44px rgba(0,0,0,0.55)); }
+      `}</style>
     </div>
   );
 }
@@ -236,9 +261,15 @@ function Nav({ currentPage, onNavigate }) {
         backdropFilter: scrolled || mobileOpen ? "blur(12px)" : "none",
         transition: "all 0.4s ease", padding: "0 clamp(16px, 4vw, 60px)"
       }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
+        <div style={{
+          maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between",
+          height: scrolled || mobileOpen ? "64px" : "96px", transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
+        }}>
           <div onClick={() => { setMobileOpen(false); onNavigate("home"); }} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
-            <img src="/logo-light.png" alt="Free Reign Media" className="nav-logo-img" style={{ height: "32px", objectFit: "contain" }} />
+            <img src="/logo-light.png" alt="Free Reign Media" className="nav-logo-img" style={{
+              height: scrolled || mobileOpen ? "38px" : "70px", objectFit: "contain",
+              transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
+            }} />
           </div>
           {/* Desktop links */}
           <div className="nav-desktop-links" style={{ display: "flex", gap: "32px", alignItems: "center" }}>
@@ -304,12 +335,11 @@ function Nav({ currentPage, onNavigate }) {
         <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.2em", textTransform: "uppercase", opacity: mobileOpen ? 1 : 0, transition: "opacity 0.4s ease 0.35s" }}>We Engineer Credibility</span>
       </div>
       <style>{`
-        .nav-logo-img { height: 32px; }
         .nav-desktop-links { display: flex !important; }
         .nav-hamburger { display: none !important; }
         .nav-mobile-drawer { display: none !important; }
         @media (max-width: 768px) {
-          .nav-logo-img { height: 26px !important; }
+          .nav-logo-img { max-height: 44px; }
           .nav-desktop-links { display: none !important; }
           .nav-hamburger { display: flex !important; }
           .nav-mobile-drawer { display: flex !important; }
@@ -339,7 +369,6 @@ function Hero({ onNavigate }) {
         transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#c8102e", marginBottom: "20px", fontWeight: 600 }}>Strategic Communications</p>
-        <img src="/logo-light.png" alt="Free Reign Media" style={{ height: "50px", objectFit: "contain", marginBottom: "20px" }} />
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2.4rem, 7vw, 5rem)",
           color: "#fff", fontWeight: 700, lineHeight: 1.05, margin: "0 0 24px", letterSpacing: "-0.02em"
