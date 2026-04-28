@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
 const MEDIA_LOGOS = [
-  { name: "CTV News", img: "/logos/ctv-news-new.jpeg" },
+  { name: "CTV News", img: "/logos/ctv-news-transparent.png" },
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Forbes", img: "/logos/forbes-updated.png" },
   { name: "The Logic", img: "/logos/the-logic.png" },
   { name: "Bloomberg", img: "/logos/bloomberg-updated.png" },
   { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
-  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
+  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg-transparent.png" },
   { name: "Financial Post", img: "/logos/financial-post.png" },
   { name: "BetaKit", img: "/logos/betakit-updated.png" },
   { name: "CoinDesk", img: "/logos/coindesk-updated.png" },
@@ -21,10 +21,10 @@ const MOBILE_MEDIA_LOGOS = [
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Bloomberg", img: "/logos/bloomberg-updated.png" },
   { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
-  { name: "CTV News", img: "/logos/ctv-news-new.jpeg" },
+  { name: "CTV News", img: "/logos/ctv-news-transparent.png" },
   { name: "Financial Post", img: "/logos/financial-post.png" },
   { name: "BetaKit", img: "/logos/betakit-updated.png" },
-  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
+  { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg-transparent.png" },
 ];
 
 const TETRA_HEADLINES = [
@@ -88,13 +88,13 @@ const SERVICES = [
 ];
 
 const LOGO_IMG_MAP = {
-  "CTV News": "/logos/ctv-news-new.jpeg",
+  "CTV News": "/logos/ctv-news-transparent.png",
   "CBC News": "/logos/cbc-news-updated.png",
   "Forbes": "/logos/forbes-updated.png",
   "The Logic": "/logos/the-logic.png",
   "Bloomberg": "/logos/bloomberg-updated.png",
   "The Globe and Mail": "/logos/globe-and-mail.png",
-  "BNN Bloomberg": "/logos/bnn-bloomberg.png",
+  "BNN Bloomberg": "/logos/bnn-bloomberg-transparent.png",
   "Financial Post": "/logos/financial-post.png",
   "BetaKit": "/logos/betakit-updated.png",
   "CoinDesk": "/logos/coindesk-updated.png",
@@ -105,7 +105,7 @@ const LOGO_IMG_MAP = {
 };
 
 const LOGO_FIT = {
-  "CTV News": { height: 34, width: 150 },
+  "CTV News": { height: 68, width: 300 },
   "CBC News": { height: 24, width: 150 },
   "Forbes": { height: 24, width: 108 },
   "The Logic": { height: 24, width: 118 },
@@ -122,7 +122,7 @@ const LOGO_FIT = {
 };
 
 const MARQUEE_LOGO_FIT = {
-  "CTV News": { height: 30, width: 128 },
+  "CTV News": { height: 60, width: 256 },
   "CBC News": { height: 22, width: 132 },
   "Forbes": { height: 24, width: 108 },
   "The Logic": { height: 23, width: 112 },
@@ -166,7 +166,7 @@ function PressLogo({ name, variant = "default" }) {
       alignItems: "center",
       justifyContent: "flex-start",
       width: isCard ? "100%" : "180px",
-      height: isCard ? "44px" : "32px",
+      height: name === "CTV News" ? "76px" : isCard ? "44px" : "32px",
       overflow: "visible",
     }}>
       <img src={src} alt={name} style={logoStyle(name)} />
@@ -259,12 +259,15 @@ function HeadlineCard({ item }) {
   );
 }
 
-function IntroAnimation({ onComplete }) {
+function IntroAnimation({ onComplete, onDocked }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 120);
     const t2 = setTimeout(() => setPhase(2), 850);
-    const t3 = setTimeout(() => setPhase(3), 2450);
+    const t3 = setTimeout(() => {
+      setPhase(3);
+      onDocked?.();
+    }, 2450);
     const t4 = setTimeout(() => setPhase(4), 3400);
     const t5 = setTimeout(() => onComplete(), 3820);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
@@ -278,7 +281,7 @@ function IntroAnimation({ onComplete }) {
       "--intro-texture-opacity": phase >= 3 ? 0 : 0.25
     }}>
       <div className="intro-logo-wrap" style={{
-        opacity: phase >= 4 ? 0 : phase >= 1 ? 1 : 0,
+        opacity: phase >= 1 ? 1 : 0,
         left: phase >= 3 ? "clamp(16px, 4vw, 60px)" : "50%",
         top: phase >= 3 ? "48px" : "50%",
         transformOrigin: phase >= 3 ? "left center" : "center center",
@@ -359,7 +362,7 @@ function IntroAnimation({ onComplete }) {
   );
 }
 
-function Nav({ currentPage, onNavigate, introComplete = true }) {
+function Nav({ currentPage, onNavigate, introComplete = true, introDocked = true }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => {
@@ -390,9 +393,9 @@ function Nav({ currentPage, onNavigate, introComplete = true }) {
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
         background: scrolled || mobileOpen ? "rgba(10,10,10,0.97)" : "transparent",
         backdropFilter: scrolled || mobileOpen ? "blur(12px)" : "none",
-        opacity: introComplete ? 1 : 0,
+        opacity: introDocked || introComplete ? 1 : 0,
         pointerEvents: introComplete ? "auto" : "none",
-        transition: "opacity 0.28s ease, background 0.4s ease, backdrop-filter 0.4s ease",
+        transition: "opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, backdrop-filter 0.4s ease",
         padding: "0 clamp(16px, 4vw, 60px)"
       }}>
         <div style={{
@@ -508,12 +511,13 @@ function Hero({ onNavigate }) {
       <div className="hero-light-ceiling" />
       <div className="hero-light-pool" />
       <div className="hero-light-floor" />
+      <div className="hero-copy-shade" />
       <div style={{
         position: "relative", zIndex: 1, textAlign: "center", maxWidth: "800px", opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(30px)",
         transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
-        <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#c8102e", marginBottom: "20px", fontWeight: 600 }}>Strategic Communications</p>
+        <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#ef334f", marginBottom: "20px", fontWeight: 700, textShadow: "0 1px 12px rgba(0,0,0,0.85)" }}>Strategic Communications</p>
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2.4rem, 7vw, 5rem)",
           color: "#fff", fontWeight: 700, lineHeight: 1.05, margin: "0 0 24px", letterSpacing: "-0.02em"
@@ -991,6 +995,7 @@ const SYMBIOTIC_DATA = {
 
 export default function App() {
   const [introComplete, setIntroComplete] = useState(false);
+  const [introDocked, setIntroDocked] = useState(false);
   const [page, setPage] = useState("home");
   const [scrollTarget, setScrollTarget] = useState(null);
 
@@ -1067,7 +1072,8 @@ export default function App() {
         }
         .hero-light-ceiling,
         .hero-light-pool,
-        .hero-light-floor {
+        .hero-light-floor,
+        .hero-copy-shade {
           position: absolute;
           left: 50%;
           pointer-events: none;
@@ -1103,6 +1109,16 @@ export default function App() {
           filter: blur(18px);
           opacity: 0.7;
         }
+        .hero-copy-shade {
+          top: 170px;
+          width: min(92vw, 900px);
+          height: min(54vh, 470px);
+          transform: translateX(-50%);
+          background:
+            radial-gradient(ellipse at center, rgba(5,5,5,0.86) 0%, rgba(5,5,5,0.64) 40%, rgba(5,5,5,0.22) 72%, transparent 100%);
+          filter: blur(20px);
+          opacity: 0.78;
+        }
         @media (max-width: 768px) {
           .hero-section {
             min-height: calc(100vh - 166px) !important;
@@ -1127,6 +1143,13 @@ export default function App() {
             height: 62px;
             opacity: 0.48;
           }
+          .hero-copy-shade {
+            top: 132px;
+            width: 118vw;
+            height: 58vh;
+            opacity: 0.9;
+            filter: blur(18px);
+          }
           .about-grid { flex-direction: column !important; gap: 32px !important; text-align: center; }
           .about-grid > div:first-child { flex: none !important; }
           .about-bio { text-align: center !important; }
@@ -1143,9 +1166,9 @@ export default function App() {
         }
       `}</style>
 
-      {!introComplete && <IntroAnimation onComplete={() => setIntroComplete(true)} />}
+      {!introComplete && <IntroAnimation onDocked={() => setIntroDocked(true)} onComplete={() => setIntroComplete(true)} />}
 
-      <Nav currentPage={page} onNavigate={navigate} introComplete={introComplete} />
+      <Nav currentPage={page} onNavigate={navigate} introComplete={introComplete} introDocked={introDocked} />
 
       {page === "home" && (
         <>
