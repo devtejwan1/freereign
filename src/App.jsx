@@ -116,16 +116,24 @@ function logoStyle(name, scale = 1) {
     height: `${fit.height * scale}px`,
     width: `${fit.width * scale}px`,
     objectFit: "contain",
-    objectPosition: "center",
+    objectPosition: "left center",
     display: "block",
   };
 }
 
-function PressLogo({ name }) {
+function PressLogo({ name, variant = "default" }) {
   const src = LOGO_IMG_MAP[name];
   if (!src) return <span style={{ fontFamily: "Georgia,serif", fontWeight: 700, fontSize: "0.85rem", color: "#1a1a1a" }}>{name}</span>;
+  const isCard = variant === "card";
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-start", width: "160px", height: "32px" }}>
+    <span style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      width: isCard ? "100%" : "180px",
+      height: isCard ? "44px" : "32px",
+      overflow: "visible",
+    }}>
       <img src={src} alt={name} style={logoStyle(name)} />
     </span>
   );
@@ -152,14 +160,15 @@ function HeadlineCard({ item }) {
   return (
     <a href={item.url} target="_blank" rel="noopener noreferrer"
       style={{
-        display: "block", background: "#fff", borderRadius: "10px", padding: "20px 22px",
+        display: "flex", flexDirection: "column", alignItems: "flex-start",
+        background: "#fff", borderRadius: "10px", padding: "20px 22px", textAlign: "left",
         textDecoration: "none", color: "#0a0a0a", transition: "transform 0.25s ease, box-shadow 0.25s ease",
         boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: "1px solid #eee",
       }}
       onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)"; }}
       onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
     >
-      <div style={{ marginBottom: "12px" }}><PressLogo name={item.outlet} /></div>
+      <div style={{ margin: "0 0 12px", display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%" }}><PressLogo name={item.outlet} variant="card" /></div>
       <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.55, fontWeight: 500, color: "#1a1a1a" }}>{item.text}</p>
       <span style={{ display: "inline-block", marginTop: "10px", fontSize: "0.75rem", color: "#c8102e", fontWeight: 600, letterSpacing: "0.03em" }}>Read Article →</span>
     </a>
@@ -170,43 +179,83 @@ function IntroAnimation({ onComplete }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 120);
-    const t2 = setTimeout(() => setPhase(2), 1850);
-    const t3 = setTimeout(() => onComplete(), 2350);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    const t2 = setTimeout(() => setPhase(2), 850);
+    const t3 = setTimeout(() => setPhase(3), 1850);
+    const t4 = setTimeout(() => setPhase(4), 2480);
+    const t5 = setTimeout(() => setPhase(5), 3220);
+    const t6 = setTimeout(() => onComplete(), 3650);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); clearTimeout(t6); };
   }, []);
   return (
     <div style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: "transparent",
-      opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-      pointerEvents: phase >= 2 ? "none" : "all", overflow: "hidden"
+      position: "fixed", inset: 0, zIndex: 9999, background: "#050505",
+      opacity: phase >= 5 ? 0 : 1, transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1)",
+      pointerEvents: phase >= 5 ? "none" : "all", overflow: "hidden"
     }}>
-      <span className="intro-dot-cover" style={{
-        top: phase >= 1 ? "42px" : "50%",
-        left: phase >= 1 ? "86px" : "50%",
-        transform: phase >= 1 ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(190)",
-        opacity: phase >= 2 ? 0 : 1,
-      }} />
+      <div className="intro-logo-wrap" style={{
+        opacity: phase >= 1 ? 1 : 0,
+        left: phase >= 4 ? "clamp(16px, 4vw, 60px)" : "50%",
+        top: phase >= 4 ? "48px" : "50%",
+        transform: phase >= 4
+          ? "translate(0, -50%) scale(0.52)"
+          : phase >= 1
+            ? "translate(-50%, -50%) translateY(0) scale(1)"
+            : "translate(-50%, -50%) translateY(8px) scale(0.98)",
+      }}>
+        <img src="/logo-light.png" alt="Free Reign Media" style={{
+          height: "clamp(74px, 13vw, 120px)", objectFit: "contain",
+          filter: "drop-shadow(0 20px 44px rgba(0,0,0,0.55))"
+        }} />
+        <span className="intro-dot-mask" style={{ opacity: phase >= 2 ? 0 : 1 }} />
+        <span className="intro-signal-dot" style={{
+          opacity: phase >= 2 && phase < 4 ? 1 : 0,
+          transform: phase >= 3 ? "translate(-50%, -50%) scale(190)" : "translate(-50%, -50%) scale(1)",
+          animation: phase === 2 ? "introSignalPulse 1.05s ease-in-out infinite" : "none",
+        }} />
+      </div>
       <style>{`
-        .intro-dot-cover {
+        .intro-logo-wrap {
           position: absolute;
-          width: 16px;
-          height: 16px;
+          display: inline-block;
+          z-index: 2;
+          transition:
+            opacity 0.7s ease,
+            left 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+            top 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: left, top, transform, opacity;
+        }
+        .intro-dot-mask {
+          position: absolute;
+          left: 68.46%;
+          top: 19.58%;
+          width: clamp(12px, 1.8vw, 18px);
+          height: clamp(12px, 1.8vw, 18px);
+          border-radius: 999px;
+          background: #050505;
+          transform: translate(-50%, -50%);
+          transition: opacity 0.18s ease;
+          z-index: 2;
+        }
+        .intro-signal-dot {
+          position: absolute;
+          left: 68.46%;
+          top: 19.58%;
+          width: clamp(8px, 1.15vw, 12px);
+          height: clamp(8px, 1.15vw, 12px);
           border-radius: 999px;
           background: #c8102e;
-          box-shadow: 0 0 34px rgba(200,16,46,0.45);
+          box-shadow: 0 0 0 0 rgba(200,16,46,0.5), 0 0 28px rgba(200,16,46,0.65);
           transform-origin: center;
           transition:
-            top 1.35s cubic-bezier(0.77, 0, 0.175, 1),
-            left 1.35s cubic-bezier(0.77, 0, 0.175, 1),
-            transform 1.35s cubic-bezier(0.77, 0, 0.175, 1),
-            opacity 0.35s ease;
-          will-change: top, left, transform, opacity;
+            opacity 0.35s ease,
+            transform 0.75s cubic-bezier(0.77, 0, 0.175, 1);
+          z-index: 3;
+          will-change: transform, opacity;
         }
-        @media (max-width: 768px) {
-          .intro-dot-cover {
-            width: 14px;
-            height: 14px;
-          }
+        @keyframes introSignalPulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(200,16,46,0.5), 0 0 28px rgba(200,16,46,0.65); }
+          50% { transform: translate(-50%, -50%) scale(0.86); box-shadow: 0 0 0 18px rgba(200,16,46,0), 0 0 38px rgba(200,16,46,0.75); }
         }
       `}</style>
     </div>
