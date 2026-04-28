@@ -189,30 +189,39 @@ function Marquee() {
           </div>
         ))}
       </div>
-      <div className="media-logo-grid">
-        {MOBILE_MEDIA_LOGOS.map((logo, i) => (
-          <div key={i} className="media-logo-cell">
-            <img src={logo.img} alt={logo.name} style={marqueeLogoStyle(logo.name)} />
+      <div className="media-logo-mobile-slider">
+        {[0, 1, 2].map(group => (
+          <div key={group} className="media-logo-mobile-track">
+            {MOBILE_MEDIA_LOGOS.map((logo, i) => (
+              <div key={`${group}-${i}`} className="media-logo-cell">
+                <img src={logo.img} alt={logo.name} style={marqueeLogoStyle(logo.name)} />
+              </div>
+            ))}
           </div>
         ))}
       </div>
       <style>{`
-        .media-logo-grid { display: none; }
+        .media-logo-mobile-slider { display: none; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }
         @media (max-width: 768px) {
-          .media-logo-band { padding: 34px 20px !important; }
+          .media-logo-band { padding: 34px 0 !important; }
           .media-logo-heading { margin-bottom: 22px !important; }
           .media-logo-marquee { display: none !important; }
-          .media-logo-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            column-gap: 18px;
-            row-gap: 20px;
+          .media-logo-mobile-slider {
+            display: flex;
             align-items: center;
-            max-width: 360px;
-            margin: 0 auto;
+            width: max-content;
+            animation: marquee 28s linear infinite;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36px, #000 calc(100vw - 36px), transparent 100vw);
+            mask-image: linear-gradient(90deg, transparent 0, #000 36px, #000 calc(100vw - 36px), transparent 100vw);
+          }
+          .media-logo-mobile-track {
+            display: flex;
+            align-items: center;
           }
           .media-logo-cell {
+            width: 156px;
+            flex: 0 0 156px;
             height: 42px;
             display: flex;
             align-items: center;
