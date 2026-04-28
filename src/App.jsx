@@ -27,6 +27,13 @@ const MOBILE_MEDIA_LOGOS = [
   { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg.png" },
 ];
 
+const MOBILE_LOGO_SLIDES = [
+  MOBILE_MEDIA_LOGOS.slice(0, 2),
+  MOBILE_MEDIA_LOGOS.slice(2, 4),
+  MOBILE_MEDIA_LOGOS.slice(4, 6),
+  MOBILE_MEDIA_LOGOS.slice(6, 8),
+];
+
 const TETRA_HEADLINES = [
   { outlet: "BetaKit", text: "Tetra Trust parent secures backing from banks, FinTechs to launch Canadian stablecoin", url: "https://betakit.com" },
   { outlet: "Forbes", text: "Banks Push To Block Stablecoin Yields", url: "https://forbes.com" },
@@ -190,38 +197,62 @@ function Marquee() {
         ))}
       </div>
       <div className="media-logo-mobile-slider">
-        {[0, 1, 2].map(group => (
-          <div key={group} className="media-logo-mobile-track">
-            {MOBILE_MEDIA_LOGOS.map((logo, i) => (
-              <div key={`${group}-${i}`} className="media-logo-cell">
+        <div className="media-logo-mobile-rail">
+          {MOBILE_LOGO_SLIDES.map((slide, slideIndex) => (
+            <div key={slideIndex} className="media-logo-mobile-slide">
+              {slide.map((logo, i) => (
+                <div key={`${slideIndex}-${i}`} className="media-logo-cell">
+                  <img src={logo.img} alt={logo.name} style={marqueeLogoStyle(logo.name)} />
+                </div>
+              ))}
+            </div>
+          ))}
+          <div className="media-logo-mobile-slide">
+            {MOBILE_LOGO_SLIDES[0].map((logo, i) => (
+              <div key={`repeat-${i}`} className="media-logo-cell">
                 <img src={logo.img} alt={logo.name} style={marqueeLogoStyle(logo.name)} />
               </div>
             ))}
           </div>
-        ))}
+        </div>
       </div>
       <style>{`
         .media-logo-mobile-slider { display: none; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }
+        @keyframes mobileLogoSlide {
+          0%, 18% { transform: translateX(0); }
+          25%, 43% { transform: translateX(-100vw); }
+          50%, 68% { transform: translateX(-200vw); }
+          75%, 93% { transform: translateX(-300vw); }
+          100% { transform: translateX(-400vw); }
+        }
         @media (max-width: 768px) {
           .media-logo-band { padding: 34px 0 !important; }
           .media-logo-heading { margin-bottom: 22px !important; }
           .media-logo-marquee { display: none !important; }
           .media-logo-mobile-slider {
+            display: block;
+            width: 100vw;
+            overflow: hidden;
+          }
+          .media-logo-mobile-rail {
             display: flex;
             align-items: center;
             width: max-content;
-            animation: marquee 28s linear infinite;
-            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36px, #000 calc(100vw - 36px), transparent 100vw);
-            mask-image: linear-gradient(90deg, transparent 0, #000 36px, #000 calc(100vw - 36px), transparent 100vw);
+            animation: mobileLogoSlide 18s cubic-bezier(0.76, 0, 0.24, 1) infinite;
           }
-          .media-logo-mobile-track {
-            display: flex;
+          .media-logo-mobile-slide {
+            width: 100vw;
+            flex: 0 0 100vw;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             align-items: center;
+            justify-items: center;
+            padding: 0 28px;
+            column-gap: 16px;
           }
           .media-logo-cell {
-            width: 156px;
-            flex: 0 0 156px;
+            width: 100%;
             height: 42px;
             display: flex;
             align-items: center;
