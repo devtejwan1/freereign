@@ -170,8 +170,8 @@ function IntroAnimation({ onComplete }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 120);
-    const t2 = setTimeout(() => setPhase(2), 2100);
-    const t3 = setTimeout(() => onComplete(), 2850);
+    const t2 = setTimeout(() => setPhase(2), 2050);
+    const t3 = setTimeout(() => onComplete(), 2800);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
   return (
@@ -181,48 +181,49 @@ function IntroAnimation({ onComplete }) {
       opacity: phase >= 2 ? 0 : 1, transition: "opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
       pointerEvents: phase >= 2 ? "none" : "all", overflow: "hidden"
     }}>
-      <div className="intro-panel intro-panel-left" style={{ transform: phase >= 1 ? "translateX(-100%)" : "translateX(0)" }} />
-      <div className="intro-panel intro-panel-right" style={{ transform: phase >= 1 ? "translateX(100%)" : "translateX(0)" }} />
       <div style={{
-        position: "absolute", width: "min(520px, 72vw)", height: "1px", background: "#c8102e",
-        transform: phase >= 1 ? "scaleX(1)" : "scaleX(0)", transformOrigin: "center",
-        opacity: phase >= 1 ? 0.9 : 0, transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease"
-      }} />
-      <div style={{
-        opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0) scale(1)" : "translateY(18px) scale(0.96)",
+        opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0) scale(1)" : "translateY(10px) scale(0.98)",
         transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)", textAlign: "center",
         padding: "24px", position: "relative", zIndex: 2
       }}>
-        <img className="intro-logo-mark" src="/logo-light.png" alt="Free Reign Media" style={{
-          height: "clamp(70px, 12vw, 118px)", objectFit: "contain",
-          clipPath: phase >= 1 ? "inset(0 0 0 0)" : "inset(0 100% 0 0)",
-          transition: "clip-path 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, filter 0.9s ease"
-        }} />
-        <div style={{
-          width: "120px", height: "1px", background: "#c8102e", margin: "22px auto 0",
-          opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease 0.65s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.65s",
-          transform: phase >= 1 ? "scaleX(1)" : "scaleX(0)", transformOrigin: "center"
-        }} />
+        <div className="intro-logo-wrap" style={{ position: "relative", display: "inline-block" }}>
+          <img className="intro-logo-mark" src="/logo-light.png" alt="Free Reign Media" style={{
+            height: "clamp(70px, 12vw, 118px)", objectFit: "contain",
+            opacity: phase >= 1 ? 1 : 0,
+            transform: phase >= 1 ? "scale(1)" : "scale(0.985)",
+            filter: phase >= 1 ? "drop-shadow(0 20px 44px rgba(0,0,0,0.55)) blur(0)" : "drop-shadow(0 20px 44px rgba(0,0,0,0.55)) blur(4px)",
+            transition: "opacity 0.7s ease 0.28s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.28s, filter 0.9s ease 0.28s"
+          }} />
+          <span className="intro-red-dot" style={{
+            top: phase >= 1 ? "16%" : "-42%",
+            left: phase >= 1 ? "60.9%" : "50%",
+            opacity: phase >= 1 ? 1 : 0,
+          }} />
+        </div>
         <div style={{
           fontSize: "clamp(0.55rem, 1.2vw, 0.7rem)", textTransform: "uppercase", letterSpacing: "0.25em",
-          color: "rgba(255,255,255,0.4)", marginTop: "16px", fontWeight: 500,
+          color: "rgba(255,255,255,0.4)", marginTop: "20px", fontWeight: 500,
           opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0)" : "translateY(8px)",
           transition: "opacity 0.8s ease 0.85s, transform 0.8s ease 0.85s"
         }}>We Engineer Credibility.</div>
       </div>
       <style>{`
-        .intro-panel {
+        .intro-red-dot {
           position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 50%;
-          background: #0a0a0a;
-          transition: transform 1.25s cubic-bezier(0.77, 0, 0.175, 1) 1.15s;
-          z-index: 1;
+          width: clamp(8px, 1.2vw, 12px);
+          height: clamp(8px, 1.2vw, 12px);
+          border-radius: 999px;
+          background: #c8102e;
+          box-shadow: 0 0 0 0 rgba(200,16,46,0.45), 0 0 28px rgba(200,16,46,0.65);
+          transform: translate(-50%, -50%);
+          transition: top 0.9s cubic-bezier(0.16, 1, 0.3, 1), left 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+          animation: introDotPulse 1.25s ease-in-out 0.75s 2;
+          z-index: 3;
         }
-        .intro-panel-left { left: 0; border-right: 1px solid rgba(200,16,46,0.45); }
-        .intro-panel-right { right: 0; border-left: 1px solid rgba(200,16,46,0.45); }
-        .intro-logo-mark { filter: drop-shadow(0 20px 44px rgba(0,0,0,0.55)); }
+        @keyframes introDotPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0.45), 0 0 28px rgba(200,16,46,0.65); }
+          50% { box-shadow: 0 0 0 16px rgba(200,16,46,0), 0 0 38px rgba(200,16,46,0.75); }
+        }
       `}</style>
     </div>
   );
