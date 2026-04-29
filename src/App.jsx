@@ -39,7 +39,7 @@ const TETRA_HEADLINES = [
 const SYMBIOTIC_HEADLINES = [
   { outlet: "Bloomberg", text: "Canadian Crypto Firms Struggle to Create First Local Stablecoin", url: "https://www.bloomberg.com/news/articles/2025-06-20/canadian-crypto-firms-struggle-to-create-first-local-stablecoin" },
   { outlet: "CTV News", text: "'Massive innovation opportunity': Expert on stablecoins' regulatory framework", url: "https://www.ctvnews.ca/business/article/massive-innovation-opportunity-expert-on-stablecoins-regulatory-framework/" },
-  { outlet: "Cointelegraph", text: "Op-ed: Canada will be left behind in the global crypto race", url: "https://cointelegraph.com/news/canada-will-be-left-behind-in-the-global-crypto-race" },
+  { outlet: "Bitcoinist", text: "Symbiotic, Chainlink, and Lombard Partner For Cross-Chain Bitcoin Transfers", url: "https://bitcoinist.com/symbiotic-chainlink-lombard-cross-chain-bitcoin/" },
   { outlet: "The Defiant", text: "Symbiotic Partners with Chainlink and Lombard for Cross-Chain LBTC Transfers", url: "https://thedefiant.io/news/defi/symbiotic-partners-with-chainlink-and-lombard-for-cross-chain-lbtc-transfers" },
   { outlet: "Thinking Crypto", text: "Symbiotic is Revolutionizing Crypto Staking!", url: "https://www.youtube.com/watch?v=iW_IC3woktA&t=1s" },
   { outlet: "BNN Bloomberg", text: "U.S. Senate passes stablecoin bill for crypto industry", url: "https://www.youtube.com/watch?v=elXqMpdRORA" },
@@ -99,6 +99,7 @@ const LOGO_IMG_MAP = {
   "BetaKit": "/logos/betakit-updated.png",
   "CoinDesk": "/logos/coindesk-updated.png",
   "Cointelegraph": "/logos/cointelegraph.png",
+  "Bitcoinist": "/logos/bitcoinist.png",
   "American Banker": "/logos/american-banker.png",
   "The Defiant": "/logos/the-defiant.png",
   "Thinking Crypto": "/logos/thinking-crypto.png",
@@ -116,6 +117,7 @@ const LOGO_FIT = {
   "BetaKit": { height: 25, width: 124 },
   "CoinDesk": { height: 30, width: 154 },
   "Cointelegraph": { height: 42, width: 168 },
+  "Bitcoinist": { height: 34, width: 170 },
   "American Banker": { height: 22, width: 150 },
   "The Defiant": { height: 25, width: 130 },
   "Thinking Crypto": { height: 25, width: 142 },
@@ -133,6 +135,7 @@ const MARQUEE_LOGO_FIT = {
   "BetaKit": { height: 25, width: 118 },
   "CoinDesk": { height: 29, width: 142 },
   "Cointelegraph": { height: 34, width: 108 },
+  "Bitcoinist": { height: 30, width: 150 },
   "American Banker": { height: 22, width: 136 },
   "The Defiant": { height: 24, width: 116 },
 };
