@@ -285,7 +285,7 @@ function IntroAnimation({ onComplete, onDocked }) {
     }}>
       <div className="intro-logo-wrap" style={{
         opacity: phase >= 1 ? 1 : 0,
-        left: phase >= 3 ? "clamp(16px, 4vw, 60px)" : "50%",
+        left: phase >= 3 ? "max(clamp(16px, 4vw, 60px), calc((100vw - 1200px) / 2))" : "50%",
         top: phase >= 3 ? "48px" : "50%",
         transformOrigin: phase >= 3 ? "left center" : "center center",
         transform: phase >= 3
