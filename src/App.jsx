@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const MEDIA_LOGOS = [
-  { name: "CTV News", img: "/logos/ctv-news-transparent.png" },
+  { name: "CTV News", img: "/logos/ctv-news-cropped.png" },
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Forbes", img: "/logos/forbes-updated.png" },
   { name: "The Logic", img: "/logos/the-logic.png" },
@@ -12,7 +12,7 @@ const MEDIA_LOGOS = [
   { name: "BetaKit", img: "/logos/betakit-updated.png" },
   { name: "CoinDesk", img: "/logos/coindesk-updated.png" },
   { name: "Cointelegraph", img: "/logos/cointelegraph.png" },
-  { name: "American Banker", img: "/logos/american-banker.png" },
+  { name: "American Banker", img: "/logos/american-banker-updated.png" },
   { name: "The Defiant", img: "/logos/the-defiant.png" },
 ];
 
@@ -21,7 +21,7 @@ const MOBILE_MEDIA_LOGOS = [
   { name: "CBC News", img: "/logos/cbc-news-updated.png" },
   { name: "Bloomberg", img: "/logos/bloomberg-updated.png" },
   { name: "The Globe and Mail", img: "/logos/globe-and-mail.png" },
-  { name: "CTV News", img: "/logos/ctv-news-transparent.png" },
+  { name: "CTV News", img: "/logos/ctv-news-cropped.png" },
   { name: "Financial Post", img: "/logos/financial-post.png" },
   { name: "BetaKit", img: "/logos/betakit-updated.png" },
   { name: "BNN Bloomberg", img: "/logos/bnn-bloomberg-transparent.png" },
@@ -88,7 +88,7 @@ const SERVICES = [
 ];
 
 const LOGO_IMG_MAP = {
-  "CTV News": "/logos/ctv-news-transparent.png",
+  "CTV News": "/logos/ctv-news-cropped.png",
   "CBC News": "/logos/cbc-news-updated.png",
   "Forbes": "/logos/forbes-updated.png",
   "The Logic": "/logos/the-logic.png",
@@ -100,13 +100,13 @@ const LOGO_IMG_MAP = {
   "CoinDesk": "/logos/coindesk-updated.png",
   "Cointelegraph": "/logos/cointelegraph.png",
   "Bitcoinist": "/logos/bitcoinist.png",
-  "American Banker": "/logos/american-banker.png",
+  "American Banker": "/logos/american-banker-updated.png",
   "The Defiant": "/logos/the-defiant.png",
   "Thinking Crypto": "/logos/thinking-crypto.png",
 };
 
 const LOGO_FIT = {
-  "CTV News": { height: 68, width: 300 },
+  "CTV News": { height: 52, width: 105 },
   "CBC News": { height: 24, width: 150 },
   "Forbes": { height: 24, width: 108 },
   "The Logic": { height: 24, width: 118 },
@@ -124,7 +124,7 @@ const LOGO_FIT = {
 };
 
 const MARQUEE_LOGO_FIT = {
-  "CTV News": { height: 60, width: 256 },
+  "CTV News": { height: 44, width: 89 },
   "CBC News": { height: 22, width: 132 },
   "Forbes": { height: 24, width: 108 },
   "The Logic": { height: 23, width: 112 },
@@ -169,7 +169,7 @@ function PressLogo({ name, variant = "default" }) {
       alignItems: "center",
       justifyContent: "flex-start",
       width: isCard ? "100%" : "180px",
-      height: name === "CTV News" ? "76px" : isCard ? "44px" : "32px",
+      height: name === "CTV News" ? "56px" : isCard ? "44px" : "32px",
       overflow: "visible",
     }}>
       <img src={src} alt={name} style={logoStyle(name)} />
@@ -271,16 +271,15 @@ function IntroAnimation({ onComplete, onDocked }) {
       setPhase(3);
       onDocked?.();
     }, 2450);
-    const t4 = setTimeout(() => setPhase(4), 3400);
-    const t5 = setTimeout(() => onComplete(), 3820);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
+    const t4 = setTimeout(() => onComplete(), 3500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   }, []);
   return (
     <div className="intro-overlay" style={{
       position: "fixed", inset: 0, zIndex: 9999, background: phase >= 3 ? "transparent" : "#050505",
-      opacity: phase >= 4 ? 0 : 1,
-      transition: "opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease",
-      pointerEvents: phase >= 4 ? "none" : "all", overflow: "hidden",
+      opacity: 1,
+      transition: "background 0.35s ease",
+      pointerEvents: "all", overflow: "hidden",
       "--intro-texture-opacity": phase >= 3 ? 0 : 0.25
     }}>
       <div className="intro-logo-wrap" style={{
@@ -408,6 +407,7 @@ function Nav({ currentPage, onNavigate, introComplete = true, introDocked = true
           <div onClick={() => { setMobileOpen(false); onNavigate("home"); }} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
             <img src="/logo-light.png" alt="Free Reign Media" className="nav-logo-img" style={{
               height: scrolled || mobileOpen ? "38px" : "70px", objectFit: "contain",
+              opacity: introComplete ? 1 : 0,
               transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
             }} />
           </div>
