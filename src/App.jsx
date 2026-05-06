@@ -267,36 +267,39 @@ function IntroAnimation({ onComplete, onDocked }) {
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 120);
     const t2 = setTimeout(() => setPhase(2), 850);
-    const t3 = setTimeout(() => {
-      setPhase(3);
+    const t3 = setTimeout(() => setPhase(3), 2450);
+    const t4 = setTimeout(() => {
+      setPhase(4);
       onDocked?.();
-    }, 2450);
-    const t4 = setTimeout(() => onComplete(), 3500);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+    }, 3500);
+    const t5 = setTimeout(() => onComplete(), 4550);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
   }, []);
   return (
     <div className="intro-overlay" style={{
-      position: "fixed", inset: 0, zIndex: 9999, background: phase >= 3 ? "transparent" : "#050505",
+      position: "fixed", inset: 0, zIndex: 9999, background: phase >= 4 ? "transparent" : "#050505",
       opacity: 1,
       transition: "background 0.35s ease",
       pointerEvents: "all", overflow: "hidden",
-      "--intro-texture-opacity": phase >= 3 ? 0 : 0.25
+      "--intro-texture-opacity": phase >= 4 ? 0 : 0.25
     }}>
-      <div className="intro-logo-wrap" style={{
+      <div className={`intro-logo-wrap ${phase >= 3 ? "intro-lines-visible" : ""}`} style={{
         opacity: phase >= 1 ? 1 : 0,
-        left: phase >= 3 ? "max(clamp(16px, 4vw, 60px), calc((100vw - 1200px) / 2))" : "50%",
-        top: phase >= 3 ? "48px" : "50%",
-        transformOrigin: phase >= 3 ? "left center" : "center center",
-        transform: phase >= 3
-          ? "translate(0, -50%) scale(0.583333)"
+        left: phase >= 4 ? "max(clamp(16px, 4vw, 60px), calc((100vw - 1200px) / 2))" : "50%",
+        top: phase >= 4 ? "48px" : "50%",
+        transformOrigin: phase >= 4 ? "left center" : "center center",
+        transform: phase >= 4
+          ? "translate3d(0, -50%, 0) scale(var(--intro-dock-scale, 0.583333))"
           : phase >= 1
-            ? "translate(-50%, -50%) translateY(0) scale(1)"
-            : "translate(-50%, -50%) translateY(8px) scale(0.98)",
+            ? "translate3d(-50%, -50%, 0) translateY(0) scale(1)"
+            : "translate3d(-50%, -50%, 0) translateY(8px) scale(0.98)",
       }}>
-        <img src="/logo-light.png" alt="Free Reign Media" style={{
-          height: "clamp(74px, 13vw, 120px)", objectFit: "contain",
-          filter: "drop-shadow(0 20px 44px rgba(0,0,0,0.55))"
+        <img src="/logo-light.png" alt="Free Reign Media" className="intro-logo-img" style={{
+          height: "var(--intro-logo-height)", objectFit: "contain",
+          filter: phase >= 4 ? "none" : "drop-shadow(0 20px 44px rgba(0,0,0,0.55))"
         }} />
+        <span className="intro-line-cover intro-line-cover-left" />
+        <span className="intro-line-cover intro-line-cover-right" />
         <span className="intro-dot-mask" style={{ opacity: phase >= 2 ? 0 : 1 }} />
         <span className="intro-signal-dot" style={{
           opacity: phase >= 2 ? 1 : 0,
@@ -320,12 +323,50 @@ function IntroAnimation({ onComplete, onDocked }) {
           position: absolute;
           display: inline-block;
           z-index: 2;
+          --intro-logo-height: clamp(74px, 13vw, 120px);
+          width: calc(var(--intro-logo-height) * 2.6947368421);
+          height: var(--intro-logo-height);
+          --intro-dock-scale: 0.583333;
           transition:
             opacity 0.7s ease,
             left 0.9s cubic-bezier(0.16, 1, 0.3, 1),
             top 0.9s cubic-bezier(0.16, 1, 0.3, 1),
             transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
           will-change: left, top, transform, opacity;
+        }
+        .intro-logo-img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          backface-visibility: hidden;
+          transform: translateZ(0);
+          transition: filter 0.2s ease;
+          will-change: transform, filter;
+        }
+        .intro-line-cover {
+          position: absolute;
+          top: 71.9%;
+          height: 1.8%;
+          background: #050505;
+          z-index: 6;
+          transform: translate3d(0, 0, 0);
+          transition: transform 0.82s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: transform;
+        }
+        .intro-line-cover-left {
+          left: 4.65%;
+          width: 24.35%;
+          transform-origin: left center;
+          --line-cover-exit: -106%;
+        }
+        .intro-line-cover-right {
+          right: 6.75%;
+          width: 24.35%;
+          transform-origin: right center;
+          --line-cover-exit: 106%;
+        }
+        .intro-lines-visible .intro-line-cover {
+          transform: translate3d(var(--line-cover-exit), 0, 0);
         }
         .intro-dot-mask {
           position: absolute;
@@ -337,7 +378,7 @@ function IntroAnimation({ onComplete, onDocked }) {
           background: #050505;
           transform: translate(-50%, -50%);
           transition: opacity 0.18s ease;
-          z-index: 2;
+          z-index: 7;
         }
         .intro-signal-dot {
           position: absolute;
@@ -352,12 +393,17 @@ function IntroAnimation({ onComplete, onDocked }) {
           transition:
             opacity 0.35s ease,
             transform 0.75s cubic-bezier(0.77, 0, 0.175, 1);
-          z-index: 3;
+          z-index: 8;
           will-change: transform, opacity;
         }
         @keyframes introSignalPulse {
           0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(200,16,46,0.5), 0 0 28px rgba(200,16,46,0.65); }
           50% { transform: translate(-50%, -50%) scale(0.86); box-shadow: 0 0 0 18px rgba(200,16,46,0), 0 0 38px rgba(200,16,46,0.75); }
+        }
+        @media (max-width: 768px) {
+          .intro-logo-wrap {
+            --intro-dock-scale: 0.594595;
+          }
         }
       `}</style>
     </div>
@@ -406,7 +452,7 @@ function Nav({ currentPage, onNavigate, introComplete = true, introDocked = true
         }}>
           <div onClick={() => { setMobileOpen(false); onNavigate("home"); }} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
             <img src="/logo-light.png" alt="Free Reign Media" className="nav-logo-img" style={{
-              height: scrolled || mobileOpen ? "38px" : "70px", objectFit: "contain",
+              height: scrolled || mobileOpen ? "38px" : "var(--nav-logo-height, 70px)", objectFit: "contain",
               opacity: introComplete ? 1 : 0,
               transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
             }} />
@@ -478,8 +524,13 @@ function Nav({ currentPage, onNavigate, introComplete = true, introDocked = true
         .nav-desktop-links { display: flex !important; }
         .nav-hamburger { display: none !important; }
         .nav-mobile-drawer { display: none !important; }
+        .nav-logo-img {
+          --nav-logo-height: 70px;
+          backface-visibility: hidden;
+          transform: translateZ(0);
+        }
         @media (max-width: 768px) {
-          .nav-logo-img { max-height: 44px; }
+          .nav-logo-img { --nav-logo-height: 44px; }
           .nav-desktop-links { display: none !important; }
           .nav-hamburger { display: flex !important; }
           .nav-mobile-drawer { display: flex !important; }
@@ -522,7 +573,7 @@ function Hero({ onNavigate }) {
       }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#ef334f", marginBottom: "20px", fontWeight: 700, textShadow: "0 1px 12px rgba(0,0,0,0.85)" }}>Strategic Communications</p>
         <h1 style={{
-          fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2.4rem, 7vw, 5rem)",
+          fontFamily: "inherit", fontSize: "clamp(2.4rem, 7vw, 5rem)",
           color: "#fff", fontWeight: 700, lineHeight: 1.05, margin: "0 0 24px", letterSpacing: "-0.02em"
         }}>We Engineer<br />Credibility.</h1>
         <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.15rem)", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: "620px", margin: "0 auto 36px" }}>
@@ -555,12 +606,12 @@ function About() {
           }}>
             <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "60% center" }} />
           </div>
-          <p style={{ marginTop: "16px", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
+          <p style={{ marginTop: "16px", fontFamily: "inherit", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
         </div>
         <div className="about-bio" style={{ flex: "1 1 420px", minWidth: "300px", maxWidth: "620px" }}>
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
+          <h2 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
             Real Editorial Experience.<br />Real Results.
           </h2>
           <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "rgba(255,255,255,0.6)", marginBottom: "16px" }}>
@@ -590,7 +641,7 @@ function Services() {
               onMouseLeave={e => { e.currentTarget.style.borderColor = "#eee"; e.currentTarget.style.boxShadow = "none"; }}
             >
               <div style={{ marginBottom: "18px" }}>{s.icon}</div>
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 14px" }}>{s.title}</h3>
+              <h3 style={{ fontFamily: "inherit", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 14px" }}>{s.title}</h3>
               <p style={{ fontSize: "1rem", lineHeight: 1.75, color: "#555", margin: 0 }}>{s.desc}</p>
             </div>
           ))}
@@ -613,7 +664,7 @@ function WorkPreview({ onNavigate }) {
     <section id="work" className="paper-texture paper-warm" style={{ padding: "100px clamp(20px, 5vw, 60px)", background: "#fafafa" }}>
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Selected Work</p>
-        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#0a0a0a", margin: "0 0 50px" }}>Case Studies</h2>
+        <h2 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#0a0a0a", margin: "0 0 50px" }}>Case Studies</h2>
         <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
           {[
             { name: "Tetra Digital Group", desc: "Shifted the conversation from speculation to infrastructure. 30+ earned media stories in 4 months.", page: "tetra", logoImg: "/logos/tetra-digital-group.png" },
@@ -636,7 +687,7 @@ function WorkPreview({ onNavigate }) {
                 )}
               </div>
               <p style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.2em", color: "#c8102e", marginBottom: "8px", fontWeight: 600 }}>Case Study</p>
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, margin: "0 0 14px" }}>{c.name}</h3>
+              <h3 style={{ fontFamily: "inherit", fontSize: "1.5rem", fontWeight: 700, margin: "0 0 14px" }}>{c.name}</h3>
               <p style={{ fontSize: "0.9rem", lineHeight: 1.6, color: "rgba(255,255,255,0.55)", margin: "0 0 20px" }}>{c.desc}</p>
               <span style={{ fontSize: "0.75rem", color: "#c8102e", fontWeight: 600, letterSpacing: "0.05em" }}>View Case Study →</span>
             </div>
@@ -654,7 +705,7 @@ function Testimonial() {
         <svg width="32" height="32" viewBox="0 0 24 24" fill="#c8102e" style={{ marginBottom: "20px", opacity: 0.3 }}>
           <path d="M3 13h2a4 4 0 014 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-5zm10 0h2a4 4 0 014 4v1a2 2 0 01-2 2h-2a2 2 0 01-2-2v-5zM3 13V8a5 5 0 015-5h1m5 10V8a5 5 0 015-5h1"/>
         </svg>
-        <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1rem, 2.5vw, 1.3rem)", lineHeight: 1.7, color: "#333", fontStyle: "italic", margin: "0 0 24px" }}>
+        <p style={{ fontFamily: "inherit", fontSize: "clamp(1rem, 2.5vw, 1.3rem)", lineHeight: 1.7, color: "#333", fontStyle: "italic", margin: "0 0 24px" }}>
           Gina is a highly professional media and communications expert who deeply understands both the crypto ecosystem and the broader news cycle. She's excellent at media coaching and helping to shape a narrative that resonates globally while helping to maintain an authentic voice. A true partner—always sharp, reliable, and on top of every detail.
         </p>
         <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0a0a0a" }}>Jillian Friedman</p>
@@ -672,7 +723,7 @@ function ContactCTA({ onNavigate }) {
     }}>
       <div style={{ maxWidth: "600px", margin: "0 auto" }}>
         <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Get in Touch</p>
-        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, margin: "0 0 16px" }}>Let's Build Your Story</h2>
+        <h2 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, margin: "0 0 16px" }}>Let's Build Your Story</h2>
         <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: "32px" }}>
           Ready to position your brand for meaningful coverage? Let's discuss how we can help you navigate the media landscape with clarity and purpose.
         </p>
@@ -711,13 +762,13 @@ function CaseStudyPage({ data, onNavigate }) {
             </div>
           )}
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Case Study</p>
-          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 700, margin: "0 0 24px", letterSpacing: "-0.02em" }}>{data.title}</h1>
+          <h1 style={{ fontFamily: "inherit", fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 700, margin: "0 0 24px", letterSpacing: "-0.02em" }}>{data.title}</h1>
         </div>
       </section>
 
       <section style={{ padding: "60px clamp(20px, 5vw, 60px)", background: "#fff" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 16px" }}>The Assignment</h3>
+          <h3 style={{ fontFamily: "inherit", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 16px" }}>The Assignment</h3>
           {(data.assignmentParagraphs || [data.assignment1, data.assignment2]).map((paragraph, i, paragraphs) => (
             <p key={i} style={{ fontSize: "1rem", lineHeight: 1.8, color: "#555", marginBottom: i === paragraphs.length - 1 ? 0 : "16px" }}>{paragraph}</p>
           ))}
@@ -726,11 +777,11 @@ function CaseStudyPage({ data, onNavigate }) {
 
       <section className="charcoal-texture" style={{ padding: "60px clamp(20px, 5vw, 60px)", background: "#0a0a0a" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", fontWeight: 700, color: "#fff", margin: "0 0 36px" }}>By the Numbers</h3>
+          <h3 style={{ fontFamily: "inherit", fontSize: "1.3rem", fontWeight: 700, color: "#fff", margin: "0 0 36px" }}>By the Numbers</h3>
           <div className="stats-row" style={{ display: "flex", gap: "48px", flexWrap: "wrap", marginBottom: "0" }}>
             {data.stats.map((s, i) => (
               <div key={i} style={{ borderLeft: "3px solid #c8102e", paddingLeft: "20px" }}>
-                <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.8rem", fontWeight: 700, color: "#c8102e", lineHeight: 1 }}>{s.number}</div>
+                <div style={{ fontFamily: "inherit", fontSize: "2.8rem", fontWeight: 700, color: "#c8102e", lineHeight: 1 }}>{s.number}</div>
                 <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.55)", maxWidth: "220px", lineHeight: 1.5, marginTop: "8px" }}>{s.label}</div>
               </div>
             ))}
@@ -740,7 +791,7 @@ function CaseStudyPage({ data, onNavigate }) {
 
       <section style={{ padding: "60px clamp(20px, 5vw, 60px)", background: "#fff" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 28px" }}>The Rundown</h3>
+          <h3 style={{ fontFamily: "inherit", fontSize: "1.3rem", fontWeight: 700, color: "#0a0a0a", margin: "0 0 28px" }}>The Rundown</h3>
           <div className="headline-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
             {data.headlines.map((h, i) => <HeadlineCard key={i} item={h} />)}
           </div>
@@ -780,7 +831,7 @@ function ContactPage({ onNavigate }) {
       <div style={{ paddingTop: "64px", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fafafa" }}>
         <div style={{ textAlign: "center", maxWidth: "400px" }}>
           <div style={{ fontSize: "3rem", marginBottom: "16px" }}>✓</div>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.8rem", margin: "0 0 12px" }}>Thank You</h2>
+          <h2 style={{ fontFamily: "inherit", fontSize: "1.8rem", margin: "0 0 12px" }}>Thank You</h2>
           <p style={{ color: "#666", lineHeight: 1.7 }}>We've received your inquiry and will be in touch within 24 hours.</p>
           <button onClick={() => onNavigate("home")} style={{
             marginTop: "24px", background: "#0a0a0a", color: "#fff", border: "none",
@@ -806,7 +857,7 @@ function ContactPage({ onNavigate }) {
             onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
           >← Back to Home</span>
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Get in Touch</p>
-          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.8rem, 5vw, 2.8rem)", fontWeight: 700, margin: "0 0 12px" }}>Start Your Inquiry</h1>
+          <h1 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 5vw, 2.8rem)", fontWeight: 700, margin: "0 0 12px" }}>Start Your Inquiry</h1>
           <p style={{ color: "rgba(255,255,255,0.45)", lineHeight: 1.7, fontSize: "0.95rem" }}>Tell us about your project and we'll get back to you within 24 hours.</p>
         </div>
       </section>
@@ -918,24 +969,24 @@ function PrivacyPage({ onNavigate }) {
             fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", cursor: "pointer",
             textTransform: "uppercase", letterSpacing: "0.1em", display: "inline-block", marginBottom: "24px"
           }}>← Back to Home</span>
-          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2rem", fontWeight: 700 }}>Privacy Policy</h1>
+          <h1 style={{ fontFamily: "inherit", fontSize: "2rem", fontWeight: 700 }}>Privacy Policy</h1>
         </div>
       </section>
       <section style={{ padding: "48px clamp(20px, 5vw, 60px) 80px", background: "#fff" }}>
         <div style={{ maxWidth: "700px", margin: "0 auto", fontSize: "0.9rem", lineHeight: 1.8, color: "#555" }}>
           <p><strong>Effective Date:</strong> January 1, 2026</p>
           <p>Free Reign Media ("we," "our," or "us") respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or submit an inquiry through our contact form.</p>
-          <h3 style={{ color: "#0a0a0a", fontFamily: "'Playfair Display', Georgia, serif", marginTop: "28px" }}>Information We Collect</h3>
+          <h3 style={{ color: "#0a0a0a", fontFamily: "inherit", marginTop: "28px" }}>Information We Collect</h3>
           <p>When you submit an inquiry through our contact form, we may collect your name, email address, company name, company website, LinkedIn URL, service interests, preferred start date, and how you heard about us. We may also collect technical data such as your browser type, IP address, and pages visited through standard analytics tools.</p>
-          <h3 style={{ color: "#0a0a0a", fontFamily: "'Playfair Display', Georgia, serif", marginTop: "28px" }}>How We Use Your Information</h3>
+          <h3 style={{ color: "#0a0a0a", fontFamily: "inherit", marginTop: "28px" }}>How We Use Your Information</h3>
           <p>We use the information we collect to respond to your inquiries and provide requested services, communicate with you about our services, improve our website and user experience, and comply with legal obligations.</p>
-          <h3 style={{ color: "#0a0a0a", fontFamily: "'Playfair Display', Georgia, serif", marginTop: "28px" }}>Information Sharing</h3>
+          <h3 style={{ color: "#0a0a0a", fontFamily: "inherit", marginTop: "28px" }}>Information Sharing</h3>
           <p>We do not sell, trade, or rent your personal information to third parties. We may share your information with trusted service providers who assist in operating our website or conducting our business, provided they agree to keep this information confidential.</p>
-          <h3 style={{ color: "#0a0a0a", fontFamily: "'Playfair Display', Georgia, serif", marginTop: "28px" }}>Data Retention</h3>
+          <h3 style={{ color: "#0a0a0a", fontFamily: "inherit", marginTop: "28px" }}>Data Retention</h3>
           <p>We retain your personal information only as long as necessary to fulfill the purposes outlined in this policy or as required by law.</p>
-          <h3 style={{ color: "#0a0a0a", fontFamily: "'Playfair Display', Georgia, serif", marginTop: "28px" }}>Your Rights</h3>
+          <h3 style={{ color: "#0a0a0a", fontFamily: "inherit", marginTop: "28px" }}>Your Rights</h3>
           <p>You may request access to, correction of, or deletion of your personal data by contacting us at gina@freereignmedia.com.</p>
-          <h3 style={{ color: "#0a0a0a", fontFamily: "'Playfair Display', Georgia, serif", marginTop: "28px" }}>Contact</h3>
+          <h3 style={{ color: "#0a0a0a", fontFamily: "inherit", marginTop: "28px" }}>Contact</h3>
           <p>If you have questions about this Privacy Policy, please contact us at gina@freereignmedia.com.</p>
         </div>
       </section>
