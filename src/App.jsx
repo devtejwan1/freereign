@@ -615,13 +615,13 @@ function About() {
         <div className="about-bio" style={{ flex: "1 1 420px", minWidth: "300px", maxWidth: "620px" }}>
           <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
           <h2 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
-            Real Editorial Experience.<br />Real Results.
+            Built in the Newsroom.
           </h2>
           <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "rgba(255,255,255,0.6)", marginBottom: "16px" }}>
-            Free Reign Media is founded on nearly two decades inside Canada's most demanding newsrooms. Led by Gina Chung—a communications strategist, former reporter, and veteran news producer—our work is grounded in real editorial decision-making and execution.
+            Free Reign Media is built on nearly two decades of experience inside major Canadian newsrooms.
           </p>
           <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "rgba(255,255,255,0.6)" }}>
-            We don't just understand media. We've lived it. From the assignment desk to the anchor chair, we know how stories get made—and how to position yours for maximum impact.
+            Led by Gina Chung, a communications strategist, former reporter and veteran news producer, our approach is shaped by firsthand experience of how stories are evaluated, developed and ultimately make news.
           </p>
         </div>
       </div>
