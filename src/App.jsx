@@ -571,13 +571,16 @@ function Hero({ onNavigate }) {
         transform: visible ? "translateY(0)" : "translateY(30px)",
         transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
-        <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#ef334f", marginBottom: "20px", fontWeight: 700, textShadow: "0 1px 12px rgba(0,0,0,0.85)" }}>Strategic Communications</p>
+        <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#ef334f", marginBottom: "20px", fontWeight: 700, textShadow: "0 1px 12px rgba(0,0,0,0.85)" }}>STRATEGIC COMMUNICATIONS &amp; MEDIA RELATIONS</p>
         <h1 style={{
           fontFamily: "inherit", fontSize: "clamp(2.4rem, 7vw, 5rem)",
           color: "#fff", fontWeight: 700, lineHeight: 1.05, margin: "0 0 24px", letterSpacing: "-0.02em"
-        }}>We Engineer<br />Credibility.</h1>
+        }}>Know What Makes News.</h1>
+        <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.15rem)", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: "620px", margin: "0 auto 18px" }}>
+          Free Reign Media is a strategic communications consultancy helping companies and their leaders across technology and financial services turn expertise, ideas and business milestones into stories that earn attention.
+        </p>
         <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.15rem)", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: "620px", margin: "0 auto 36px" }}>
-          Built on nearly two decades inside Canada's most demanding newsrooms, we guide clients in navigating the media with clarity and focus, helping them build trust, demonstrate expertise, and make an impact where it counts.
+          Grounded in real newsroom experience, we bring an editorial lens to communications, helping clients understand what matters to the media and how to become part of the conversation.
         </p>
         <button onClick={() => onNavigate("contact")} style={{
           background: "#c8102e", color: "#fff", border: "none", padding: "14px 36px",
