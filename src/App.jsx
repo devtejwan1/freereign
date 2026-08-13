@@ -571,11 +571,11 @@ function Hero({ onNavigate }) {
         transform: visible ? "translateY(0)" : "translateY(30px)",
         transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
-        <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#ef334f", marginBottom: "20px", fontWeight: 700, textShadow: "0 1px 12px rgba(0,0,0,0.85)" }}>STRATEGIC COMMUNICATIONS &amp; MEDIA RELATIONS</p>
-        <h1 style={{
-          fontFamily: "inherit", fontSize: "clamp(2.4rem, 7vw, 5rem)",
+        <p className="hero-kicker" style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#ef334f", marginBottom: "20px", fontWeight: 700, textShadow: "0 1px 12px rgba(0,0,0,0.85)" }}>STRATEGIC COMMUNICATIONS &amp; MEDIA RELATIONS</p>
+        <h1 className="hero-headline" style={{
+          fontFamily: "inherit", fontSize: "clamp(1.65rem, 5vw, 3.8rem)",
           color: "#fff", fontWeight: 700, lineHeight: 1.05, margin: "0 0 24px", letterSpacing: "-0.02em"
-        }}>Know What Makes News.</h1>
+        }}>Know What Makes Sense.</h1>
         <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.15rem)", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: "620px", margin: "0 auto 18px" }}>
           Free Reign Media is a strategic communications consultancy helping companies and their leaders across technology and financial services turn expertise, ideas and business milestones into stories that earn attention.
         </p>
@@ -613,8 +613,8 @@ function About() {
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
         </div>
         <div className="about-bio" style={{ flex: "1 1 420px", minWidth: "300px", maxWidth: "620px" }}>
-          <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
-          <h2 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
+          <p className="about-kicker" style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
+          <h2 className="about-headline" style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, lineHeight: 1.15, margin: "0 0 24px", letterSpacing: "-0.01em" }}>
             Built in the Newsroom.
           </h2>
           <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "rgba(255,255,255,0.6)", marginBottom: "16px" }}>
@@ -1145,6 +1145,19 @@ export default function App() {
             radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.38) 12%, rgba(255,255,255,0.12) 31%, transparent 72%);
           filter: blur(10px);
           opacity: 0.78;
+        }
+        .hero-kicker,
+        .about-headline {
+          text-wrap: balance;
+        }
+        .hero-kicker {
+          max-width: 38rem;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .hero-headline,
+        .about-kicker {
+          white-space: nowrap;
         }
         .hero-light-pool {
           top: 82px;
