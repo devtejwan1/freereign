@@ -609,8 +609,8 @@ function About() {
           }}>
             <img src="/headshot.jpg" alt="Gina Chung" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "60% center" }} />
           </div>
-          <p style={{ marginTop: "16px", fontFamily: "inherit", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
-          <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
+          <p className="profile-name" style={{ marginTop: "16px", fontFamily: "inherit", fontSize: "1.1rem", fontWeight: 600 }}>Gina Chung</p>
+          <p className="profile-title" style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.05em" }}>Founder & Lead Strategist</p>
         </div>
         <div className="about-bio" style={{ flex: "1 1 420px", minWidth: "300px", maxWidth: "620px" }}>
           <p className="about-kicker" style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "16px", fontWeight: 600 }}>Who We Are</p>
@@ -725,7 +725,7 @@ function ContactCTA({ onNavigate }) {
       background: "linear-gradient(160deg, #0a0a0a 0%, #1a1a1a 100%)", color: "#fff", textAlign: "center"
     }}>
       <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-        <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Get in Touch</p>
+        <p className="get-in-touch-kicker" style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Get in Touch</p>
         <h2 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, margin: "0 0 16px" }}>Let's Build Your Story</h2>
         <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: "32px" }}>
           Ready to position your brand for meaningful coverage? Let's discuss how we can help you navigate the media landscape with clarity and purpose.
@@ -859,7 +859,7 @@ function ContactPage({ onNavigate }) {
             onMouseEnter={e => e.target.style.color = "#c8102e"}
             onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
           >← Back to Home</span>
-          <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Get in Touch</p>
+          <p className="get-in-touch-kicker" style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.25em", color: "#c8102e", marginBottom: "12px", fontWeight: 600 }}>Get in Touch</p>
           <h1 style={{ fontFamily: "inherit", fontSize: "clamp(1.8rem, 5vw, 2.8rem)", fontWeight: 700, margin: "0 0 12px" }}>Start Your Inquiry</h1>
           <p style={{ color: "rgba(255,255,255,0.45)", lineHeight: 1.7, fontSize: "0.95rem" }}>Tell us about your project and we'll get back to you within 24 hours.</p>
         </div>
@@ -1158,6 +1158,13 @@ export default function App() {
           -webkit-hyphens: auto;
           orphans: 3;
           widows: 3;
+        }
+        .hero-kicker,
+        .profile-name,
+        .profile-title,
+        .get-in-touch-kicker {
+          text-align: center;
+          text-align-last: center;
         }
         .hero-kicker {
           max-width: 38rem;
