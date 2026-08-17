@@ -1150,6 +1150,15 @@ export default function App() {
         .about-headline {
           text-wrap: balance;
         }
+        p {
+          text-align: justify;
+          text-align-last: left;
+          text-wrap: pretty;
+          hyphens: auto;
+          -webkit-hyphens: auto;
+          orphans: 3;
+          widows: 3;
+        }
         .hero-kicker {
           max-width: 38rem;
           margin-left: auto;
